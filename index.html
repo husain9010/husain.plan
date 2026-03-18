@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business English Curriculum - Change Management & Business Development</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #7B2FF7;
+  --primary-light: #F0E6FF;
+  --primary-dark: #5A1DB8;
+  --bg: #FAFAFA;
+  --card: #FFFFFF;
+  --text: #1A1A2E;
+  --text-sec: #6B7280;
+  --border: #E8E8ED;
+  --success: #22C55E;
+  --pink: #FF4F81;
+  --verb: #2563EB;
+  --noun: #059669;
+  --adj: #D97706;
+  --adv: #7C3AED;
+  --prep: #6B7280;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.app{max-width:920px;margin:0 auto;padding:20px}
+
+/* Header */
+.hdr{background:var(--card);border-radius:16px;padding:28px 32px;margin-bottom:20px;border:1px solid var(--border)}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;color:var(--primary)}
+.logo svg{width:32px;height:32px}
+.hdr h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.hdr p{font-size:14px;color:var(--text-sec);margin-bottom:20px}
+.stats{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:20px;font-size:13px;color:var(--text-sec)}
+.stats span{display:flex;align-items:center;gap:6px}
+.stats svg{width:16px;height:16px;stroke:var(--text-sec);fill:none;stroke-width:1.5}
+.prog-wrap{background:#F3F4F6;border-radius:12px;padding:14px 18px}
+.prog-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+.prog-bar{height:8px;background:#E5E7EB;border-radius:8px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--pink));border-radius:8px;transition:width .5s;width:0%}
+.prog-sub{font-size:11px;color:var(--text-sec);margin-top:6px}
+
+/* Sidebar Nav */
+.sidebar{background:var(--card);border-radius:14px;padding:16px 20px;margin-bottom:20px;border:1px solid var(--border)}
+.sidebar-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sidebar-title svg{width:18px;height:18px;stroke:var(--text);fill:none;stroke-width:1.5}
+.nav-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:white;transition:all .2s;color:var(--text-sec)}
+.pill:hover{border-color:var(--primary);color:var(--primary)}
+.pill.active{background:var(--primary);color:white;border-color:var(--primary)}
+
+/* Legend */
+.legend{background:var(--card);border-radius:14px;padding:14px 20px;margin-bottom:20px;border:1px solid var(--border);display:flex;gap:20px;flex-wrap:wrap;font-size:12px;align-items:center}
+.legend-title{font-weight:600;font-size:13px}
+.leg-item{display:flex;align-items:center;gap:5px}
+.leg-dot{width:10px;height:10px;border-radius:3px}
+
+/* Unit */
+.unit{background:var(--card);border-radius:14px;margin-bottom:14px;border:1px solid var(--border);overflow:hidden}
+.unit-hdr{padding:18px 22px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:background .2s}
+.unit-hdr:hover{background:#FAFAFA}
+.unit-num{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:white;flex-shrink:0;background:var(--primary)}
+.unit-info{flex:1}
+.unit-info h3{font-size:16px;font-weight:600}
+.unit-meta{font-size:12px;color:var(--text-sec);display:flex;gap:14px;margin-top:3px}
+.chev{width:20px;height:20px;stroke:var(--text-sec);fill:none;stroke-width:2;transition:transform .3s;flex-shrink:0}
+.unit.open .chev{transform:rotate(180deg)}
+.unit-body{display:none;padding:0 22px 22px}
+.unit.open .unit-body{display:block}
+
+/* Chapter (from LinkedIn's structure) */
+.chapter{margin-bottom:16px}
+.ch-hdr{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;background:#F9FAFB;border-radius:10px;border:1px solid var(--border);transition:background .2s}
+.ch-hdr:hover{background:#F3F4F6}
+.ch-num{font-size:13px;font-weight:600;color:var(--primary);white-space:nowrap}
+.ch-name{flex:1;font-size:14px;font-weight:600}
+.ch-time{font-size:11px;color:var(--text-sec);white-space:nowrap}
+.ch-chev{width:16px;height:16px;stroke:var(--text-sec);fill:none;stroke-width:2;transition:transform .3s}
+.chapter.open .ch-chev{transform:rotate(180deg)}
+.ch-body{display:none;padding:8px 0 0 0}
+.chapter.open .ch-body{display:block}
+
+/* Video */
+.vid{background:white;border-radius:8px;margin-bottom:6px;border:1px solid #EEEFF2;overflow:hidden}
+.vid-hdr{padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .15s}
+.vid-hdr:hover{background:#FAFBFC}
+.vid-play{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vid-play svg{width:10px;height:10px;fill:var(--text-sec);stroke:none}
+.vid-info{flex:1}
+.vid-name{font-size:13px;font-weight:500}
+.vid-dur{font-size:11px;color:var(--text-sec)}
+.vid-actions{display:flex;align-items:center;gap:8px}
+.comp-chk{width:22px;height:22px;border-radius:50%;border:1.5px solid #D1D5DB;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;font-size:11px;position:relative;background:white}
+.comp-chk:hover{border-color:var(--success)}
+.comp-chk.done{background:var(--success);border-color:var(--success);color:white}
+.comp-chk.locked{border-color:#E5E7EB;background:#F3F4F6;cursor:not-allowed;opacity:.5}
+.comp-chk.locked:hover{border-color:#E5E7EB}
+.score-badge{font-size:9px;font-weight:600;padding:2px 6px;border-radius:10px;background:#F3F4F6;color:var(--text-sec);white-space:nowrap;margin-right:4px}
+.score-badge.perfect{background:#D1FAE5;color:#065F46}
+.comp-date{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--success);white-space:nowrap;display:none}
+.comp-chk.done .comp-date{display:block}
+.vid-chev{width:14px;height:14px;stroke:var(--text-sec);fill:none;stroke-width:2;transition:transform .3s}
+.vid.open .vid-chev{transform:rotate(180deg)}
+.vid-body{display:none;padding:4px 14px 14px}
+.vid.open .vid-body{display:block}
+
+/* Transcript */
+.tr-label{font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px;color:var(--text-sec)}
+.tr-label svg{width:14px;height:14px;stroke:var(--text-sec);fill:none;stroke-width:1.5}
+.tr-box{background:#F8F9FA;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid var(--border);max-height:260px;overflow-y:auto;font-size:13px;line-height:1.9}
+.tr-box::-webkit-scrollbar{width:5px}
+.tr-box::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:3px}
+.w-v{color:var(--verb);font-weight:500}
+.w-n{color:var(--noun);font-weight:500}
+.w-j{color:var(--adj);font-weight:500}
+.w-d{color:var(--adv);font-weight:500}
+.w-p{color:var(--prep);font-style:italic}
+
+/* Tips Box */
+.tips-box{background:linear-gradient(135deg,#FAF5FF 0%,#F0E6FF 100%);border-radius:10px;padding:14px 16px;margin-bottom:10px;border-left:4px solid;border-image:linear-gradient(180deg,var(--primary),var(--pink)) 1;position:relative}
+.tips-title{font-size:13px;font-weight:600;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tips-list{list-style:none;counter-reset:tip}
+.tips-list li{counter-increment:tip;font-size:12px;line-height:1.7;padding:4px 0 4px 24px;position:relative;color:#374151}
+.tips-list li::before{content:counter(tip);position:absolute;left:0;top:5px;width:18px;height:18px;border-radius:50%;background:var(--primary);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center}
+
+/* Questions */
+.q-sec{background:#FFFBF0;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid #FDE68A}
+.q-title{font-size:13px;font-weight:600;margin-bottom:10px;color:#92400E;display:flex;align-items:center;gap:5px}
+.q-title svg{width:14px;height:14px;stroke:#92400E;fill:none;stroke-width:1.5}
+.q-item{margin-bottom:10px;font-size:13px}
+.q-item p{font-weight:500;margin-bottom:4px}
+.q-item label{display:block;padding:5px 10px;border-radius:6px;cursor:pointer;transition:background .15s;font-size:12px}
+.q-item label:hover{background:rgba(245,158,11,.08)}
+.q-item input[type=radio]{margin-right:6px;accent-color:var(--primary)}
+.q-btn{background:var(--text);color:white;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:background .2s;font-family:inherit}
+.q-btn:hover{background:var(--primary)}
+.q-res{margin-top:6px;padding:6px 10px;border-radius:6px;font-size:12px;display:none}
+.q-res.ok{background:#D1FAE5;color:#065F46;display:block}
+.q-res.no{background:#FEE2E2;color:#991B1B;display:block}
+
+/* Vocab */
+.voc-sec{background:#F0FAFB;border-radius:8px;padding:14px;border:1px solid #BAE6FD}
+.voc-title{font-size:13px;font-weight:600;margin-bottom:10px;color:#0C4A6E;display:flex;align-items:center;gap:5px}
+.voc-title svg{width:14px;height:14px;stroke:#0C4A6E;fill:none;stroke-width:1.5}
+.voc-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.voc-tbl th{background:rgba(59,130,246,.08);padding:6px 10px;text-align:left;font-weight:600;border-bottom:2px solid #BAE6FD;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.voc-tbl td{padding:6px 10px;border-bottom:1px solid #E0F2FE}
+.voc-tbl tr:hover{background:rgba(59,130,246,.03)}
+.spk{width:24px;height:24px;border-radius:50%;border:1px solid #93C5FD;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.spk:hover{background:#3B82F6;border-color:#3B82F6}
+.spk:hover svg{stroke:white}
+.spk svg{width:12px;height:12px;stroke:#3B82F6;fill:none;stroke-width:1.5}
+
+/* Link */
+.li-link{display:inline-flex;align-items:center;gap:5px;color:#0077B5;text-decoration:none;font-size:12px;font-weight:500;padding:5px 12px;background:#F0F8FF;border-radius:6px;transition:all .2s;margin-bottom:12px}
+.li-link:hover{background:#E1F0FF}
+.li-link svg{width:14px;height:14px;stroke:#0077B5;fill:none;stroke-width:1.5}
+
+@media(max-width:768px){.app{padding:12px}.hdr{padding:18px}.stats{gap:12px}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.unit-body,.ch-body,.vid-body{animation:fadeIn .25s ease}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+      Business English
+    </div>
+    <span style="font-size:12px;color:var(--text-sec)">LinkedIn Learning</span>
+  </div>
+  <h1>Change Management & Business Development</h1>
+  <p>A comprehensive English learning curriculum built from professional business content</p>
+  <div class="stats">
+    <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 42 hours estimated</span>
+    <span><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg> 3 Units</span>
+    <span><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> 13 Courses</span>
+    <span><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Quizzes + Vocabulary</span>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-top"><span>Overall Progress</span><span id="pPct">0%</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="pBar"></div></div>
+    <div class="prog-sub"><span id="pDone">0</span> of <span id="pTotal">0</span> items completed</div>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <span class="legend-title">Transcript Color Key:</span>
+  <span class="leg-item"><span class="leg-dot" style="background:var(--verb)"></span> Verb</span>
+  <span class="leg-item"><span class="leg-dot" style="background:var(--noun)"></span> Noun</span>
+  <span class="leg-item"><span class="leg-dot" style="background:var(--adj)"></span> Adjective</span>
+  <span class="leg-item"><span class="leg-dot" style="background:var(--adv)"></span> Adverb</span>
+  <span class="leg-item"><span class="leg-dot" style="background:var(--prep)"></span> Preposition</span>
+</div>
+
+<!-- Navigation -->
+<div class="sidebar">
+  <div class="sidebar-title">
+    <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    Course Units
+  </div>
+  <div class="nav-pills">
+    <div class="pill active" onclick="goUnit('u0')">Unit 1: Foundations (~14h)</div>
+    <div class="pill" onclick="goUnit('u1')">Unit 2: Leadership (~14h)</div>
+    <div class="pill" onclick="goUnit('u2')">Unit 3: Advanced (~14h)</div>
+  </div>
+</div>
+
+<div id="root"></div>
+</div>
+
+<script>
+// SVG icon templates (monochrome, outline style like Preply)
+const ICO = {
+  chev: `<svg class="chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`,
+  chevS: `<svg class="ch-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`,
+  chevV: `<svg class="vid-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`,
+  play: `<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
+  doc: `<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" width="14" height="14"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  help: `<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  book: `<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" width="14" height="14"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>`,
+  link: `<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" width="14" height="14"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+  vol: `<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>`,
+  bulb: `<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" width="14" height="14"><path d="M12 6v6m0 4v2m-7-2a7 7 0 1114 0M9 17h6a1 1 0 011 1v1a1 1 0 01-1 1H9a1 1 0 01-1-1v-1a1 1 0 011-1z"/></svg>`
+};
+
+// POS word lists for color-coding
+const VERBS = new Set(['told','is','isn\'t','are','aren\'t','was','were','have','has','had','do','does','did','go','went','gone','make','made','get','got','take','took','taken','come','came','know','knew','known','think','thought','say','said','give','gave','given','see','saw','seen','find','found','want','tell','ask','work','call','try','need','feel','become','leave','put','mean','keep','let','begin','seem','help','show','hear','play','run','move','live','believe','bring','happen','write','provide','sit','stand','lose','pay','meet','include','continue','set','learn','change','lead','understand','watch','follow','stop','create','speak','read','allow','add','spend','grow','open','walk','win','offer','remember','love','consider','appear','buy','wait','serve','die','send','expect','build','stay','fall','cut','reach','kill','remain','suggest','raise','pass','sell','require','report','decide','pull','develop','manage','describe','agree','handle','involve','receive','conduct','address','implement','engage','process','trigger','embrace','navigate','assess','foster','articulate','reinforce','demonstrate','commit','identify','overcome','position','compare','convey','mobilize','delegate','assert','collaborate','resolve','motivate','embed','sustain','bounce','reframe','amplify','captivate','probe','paraphrase','advocate','justify','propose','adapt','perceive','endure','tolerate','measure','accomplish','invest','communicate','establish','signal','recognize','acknowledge','reward','diversify','upskill','reskill','iterate','innovate','empower','align','craft','deflect','mediate','brainstorm','convince','persevere','dislike','prepare','develop','maximize','transform','adopt','focus','strategize','prioritize','clarify','motivating','implementing','communicating','establishing','building','creating','leading','handling','managing','making','advocating','recognizing','amplifying','fostering','reinforcing','embedding','modeling','aligning','delegating','asserting','resolving','overcoming','evolving','slipping','drifting']);
+const NOUNS = new Set(['change','management','leader','employee','organization','team','people','time','way','work','process','business','company','role','skill','experience','system','plan','goal','culture','behavior','habit','communication','vision','strategy','decision','value','result','environment','performance','meeting','project','initiative','issue','challenge','opportunity','success','failure','phase','stage','curve','transition','path','future','state','action','step','effort','commitment','resistance','enthusiasm','urgency','milestone','stakeholder','audience','message','framework','principle','truth','capacity','capability','resilience','mindset','boundary','recognition','reward','portfolio','career','alliance','coalition','momentum','rapport','integrity','fairness','diversity','inclusion','equity','authority','candor','transparency','accountability','empathy','compassion','poise','composure','narrative','storytelling','methodology','disruption','automation','innovation','incentive','morale','burnout','adversity','perseverance','perception','credibility','rationale','assumption','symptom','scope','compliance','fortitude','forum','routine','aftermath','denial','resignation','emergence','instinct','aggravation','dejection','readiness','assessment','coalition','repercussion','anticipation','acceptance','dedication','dynamic','insecurity','superpower','strength','vulnerability','deliverable','metric','KPI','outcome','workflow','downstream','upstream','attitude','confidence','toughness','networking']);
+const ADJS = new Set(['successful','clear','simple','new','important','good','great','different','specific','personal','key','certain','right','hard','difficult','big','little','old','high','low','long','short','first','last','next','own','best','better','other','possible','full','able','likely','real','available','current','free','open','strong','positive','negative','effective','visible','predictable','emotional','painful','historical','compelling','transparent','psychologically','safe','accountable','involved','obvious','attractive','easy','satisfying','fundamental','misguided','inclusive','genuine','intentional','mindful','strategic','proactive','resilient','adaptable','authentic','constructive','empathetic','direct','intrinsic','extrinsic','monetary','deliberate','rapid','distributed','experimental','iterative','adaptive','complex','underlying','surface-level','creative','innovative']);
+const ADVS = new Set(['not','also','very','often','just','still','even','well','never','always','already','really','usually','actually','probably','especially','quickly','successfully','honestly','unfortunately','regardless','eventually','productively','automatically','transparently','personally','specifically','dramatically','effectively','wisely','rapidly','deliberately','continuously','typically','fundamentally']);
+const PREPS = new Set(['in','on','at','to','for','with','by','from','about','into','through','during','before','after','between','without','under','within','along','following','across','behind','beyond','against','among','throughout','despite','towards','upon','around','beside','beneath','above','below','until','since','of']);
+
+function tagWord(w) {
+  const cl = w.toLowerCase().replace(/[^a-z'-]/g,'');
+  if (!cl) return w;
+  if (VERBS.has(cl)) return `<span class="w-v">${w}</span>`;
+  if (NOUNS.has(cl)) return `<span class="w-n">${w}</span>`;
+  if (ADJS.has(cl)) return `<span class="w-j">${w}</span>`;
+  if (ADVS.has(cl)) return `<span class="w-d">${w}</span>`;
+  if (PREPS.has(cl)) return `<span class="w-p">${w}</span>`;
+  return w;
+}
+
+function colorize(text) {
+  return text.replace(/[\w'-]+/g, m => tagWord(m));
+}
+
+// Track scores per video
+const scores = {};
+
+// Curriculum Data
+const DATA = [
+  {
+    id:'u0', name:'Unit 1: Change Management Foundations', level:'Beginner', hours:'~14 hours',
+    topics:[
+      {
+        num:'1.1', name:'Change Management Foundations', dur:'45min video → 2.25h study', by:'Scott Mautz',
+        url:'https://www.linkedin.com/learning/change-management-foundations-10041380',
+        chapters:[
+          { name:'The Truths of Leading Change', videos:[
+            { name:'How do people process change?', dur:'4:44', est:'14 min',
+              tr:`What if I told you that while change itself is unpredictable, your reaction to it isn't? It's true. We all have a basic human instinct for survival embedded in us since cave people times. Change threatens that instinct and triggers a predictable emotional journey. Psychiatrist Elisabeth Kubler-Ross detailed this journey in what's called The Change Curve modeled after her work on the stages of grief. It's what every human being goes through when facing change. Understanding this curve ignites your empathy as a change leader and helps you move employees through change more successfully. Knowledge of the curve enables you to remind employees that they're not alone, that everyone goes through this curve. Let's walk through the curve one step at a time. First, when change happens, status quo is shaken. Aggravation and even shock arises. How could they do this? And there's a lot of denial that the change is even happening. This blends into the next phase, resistance, which is often laced with anger, finger pointing, dejection. The resignation phase is next. This is when it's accepted that the change is indeed happening, and when energy and morale drop to low points. Eventually, people start adapting and enter the next stage, emergence, where they productively engage in the change. Then it's on to evolving where behaviors change and new approaches are integrated into new routines. In the final stage, the aftermath, you reflect and realize the change wasn't so bad after all.`,
+              tips:["The Change Curve has 6 stages: Shock/Denial → Resistance → Resignation → Emergence → Evolving → Aftermath.","People move through the curve at different speeds — some quickly, some slowly.","As a leader, knowing the curve helps you show empathy and guide people through each stage.","Grammar tip: 'embedded' is a past participle used as an adjective — 'instinct embedded in us'."],
+              qs:[{q:'What is "The Change Curve" modeled after?',o:['Business cycle theory','Kubler-Ross stages of grief','Economic models','Marketing funnel'],c:1},
+                  {q:'Which phase comes after "resistance"?',o:['Denial','Emergence','Resignation','Evolving'],c:2},
+                  {q:'What does "status quo" mean?',o:['A new plan','The current state of things','A leadership style','An emergency'],c:1}],
+              voc:[{en:'unpredictable',ar:'غير قابل للتنبؤ'},{en:'instinct',ar:'غريزة'},{en:'embedded',ar:'متجذر / مضمَّن'},{en:'triggers',ar:'يُحفّز / يُثير'},{en:'empathy',ar:'تعاطف'},{en:'denial',ar:'إنكار'},{en:'resistance',ar:'مقاومة'},{en:'resignation',ar:'استسلام / تقبّل'},{en:'emergence',ar:'بروز / ظهور'},{en:'morale',ar:'معنويات'},{en:'status quo',ar:'الوضع الراهن'}]
+            },
+            { name:'What leaders must know about leading change', dur:'4:19', est:'13 min',
+              tr:`A top executive at Facebook once told me to lead change is to understand the nature of leading change. Here are fundamental truths. First, successful change is a path, not a process. It's a path to a better way forward, not just a process to endure. As a leader of change, you must paint a clear, simple vision of a desired future state. Next, it's not change itself that's painful, it's the transition from the old way to the new way. The third truth is, plan for and act as if change will take time. Understandably, many leaders want to rush change. Regardless, you must plan for and act as if adapting will take longer than you think because it will. Next, know that change is historical, meaning the way people perceive and react to change is heavily influenced by their past experience. Finally, successful change requires visible champions. Without visible role models, change has no chance to stick.`,
+              tips:["5 truths: Change is a path (not process), transition is painful (not change), change takes time, change is historical, visible champions are needed.","Key phrase: 'commitment, not just compliance' — this means people should truly believe, not just follow orders.","Grammar tip: 'must know' uses a modal verb + base form. Compare: 'must know' vs 'should know' vs 'have to know'."],
+              qs:[{q:'Successful change is a ___, not a process.',o:['Goal','Path','Plan','Meeting'],c:1},
+                  {q:'What is more painful than change itself?',o:['The outcome','The transition','The planning','The announcement'],c:1}],
+              voc:[{en:'fundamental',ar:'أساسي / جوهري'},{en:'navigate',ar:'يتعامل مع'},{en:'endure',ar:'يتحمّل'},{en:'transition',ar:'انتقال'},{en:'perceive',ar:'يُدرك'},{en:'champions',ar:'مناصرون'},{en:'commitment',ar:'التزام'},{en:'vision',ar:'رؤية'}]
+            }
+          ]},
+          { name:'The Change Readiness Assessment', videos:[
+            { name:'Six questions leaders must ask before implementing change', dur:'4:43', est:'14 min',
+              tr:`One third of change initiatives fail before they even get started. Because change leaders often engage their organization in implementing change before getting clear on exactly what's changing and why. Before implementing anything, ask six questions. First, are you clear on what problem you're solving? Addressing a symptom rather than the cause means the change is misguided. Next, are you avoiding change drift? This is when changes being made don't address the issue you intend. Third, do you have a clear vision for the change? Fourth, do you understand in detail what policies, processes, and jobs must change? Fifth, do you know who the owners of the change are? Finally, do you know how you'll measure if the change is successful?`,
+              tips:["The 6 questions: 1) Right problem? 2) Avoiding drift? 3) Clear vision? 4) What changes? 5) Who owns it? 6) How to measure?","Change drift = when changes go off-track from the original goal.","Vocabulary tip: 'implementing' is a gerund here (verb acting as noun after 'before')."],
+              qs:[{q:'What fraction of change initiatives fail before starting?',o:['One half','One quarter','One third','Two thirds'],c:2},
+                  {q:'What is "change drift"?',o:['Changes that happen too slowly','Changes that don\'t address the intended issue','Employees who leave','Budget overruns'],c:1}],
+              voc:[{en:'initiatives',ar:'مبادرات'},{en:'implementing',ar:'تنفيذ'},{en:'symptom',ar:'عَرَض'},{en:'misguided',ar:'مضلَّل'},{en:'drift',ar:'انحراف'},{en:'scope',ar:'نطاق'},{en:'compelling',ar:'مقنع'},{en:'measure',ar:'يقيس'}]
+            },
+            { name:'Assessing an organization\'s readiness for change', dur:'3:40', est:'11 min',
+              tr:`As a leader of change, you might be ready to dive in, execute, and move the organization forward, but that doesn't mean your organization is ready. So how do you know if they are? By assessing three things: the skill, the will, and the hill. First, the skill. It's critical to understand the organization's skill level and capability to handle the change. Second, the will. Do employees have the willingness and motivation to embrace the change? Finally, the hill. How steep is the climb? What obstacles stand in the way?`,
+              tips:["The 3 readiness factors: Skill (capability), Will (motivation), Hill (obstacles).","Before diving into change, check if your team is actually ready.","Grammar tip: 'readiness' = ready + ness (adjective → noun suffix)."],
+              qs:[{q:'What three things should you assess for readiness?',o:['Plan, Do, Check','Skill, Will, Hill','Fast, Cheap, Good','Who, What, When'],c:1}],
+              voc:[{en:'readiness',ar:'استعداد'},{en:'assess',ar:'يُقيّم'},{en:'capability',ar:'قدرة'},{en:'willingness',ar:'رغبة / استعداد'},{en:'obstacles',ar:'عقبات'}]
+            },
+            { name:'The importance of enrolling early in managing change', dur:'2:17', est:'7 min',
+              tr:`Getting people enrolled in change early is essential. The earlier you bring people into the change conversation, the more ownership they feel. Early enrollment creates ambassadors who help spread enthusiasm throughout the organization. Don't wait until the change is fully planned to involve people. Start the dialogue early and often.`,
+              tips:["Early involvement creates ownership and ambassadors for the change.","Don't wait until plans are complete — start conversations early.","Vocabulary tip: 'enroll' has a different meaning here than 'enroll in school' — it means to get buy-in."],
+              qs:[{q:'Why is early enrollment important?',o:['It saves money','It creates ownership and ambassadors','It is not important','It speeds up decisions'],c:1}],
+              voc:[{en:'enrolled',ar:'مُسجّل / منخرط'},{en:'ambassadors',ar:'سفراء'},{en:'dialogue',ar:'حوار'},{en:'ownership',ar:'ملكية / إحساس بالمسؤولية'}]
+            }
+          ]},
+          { name:'Evoke Enthusiasm for Change', videos:[
+            { name:'How to create enthusiasm for change', dur:'3:59', est:'12 min',
+              tr:`So you're ready to fully engage your organization in the implementation of change. They're automatically excited about it, right? Likely not. To create excitement you need to position the change as a path to a better compelling future state while fostering the desire to get there sooner versus later. It's about going beyond acceptance to enthusiasm. Start with transparently expressing the state of the union and comparing it to the desired future. Next, articulate the impact that change will personally have on employees. Clearly articulate what's in it for the employees in the short and long term. Finally, create excited urgency. Urgency encourages action based on fear of repercussions, excited urgency inspires action based on enthusiasm for the end state.`,
+              tips:["Go beyond acceptance → aim for enthusiasm.","3 steps: Share state of the union, articulate personal impact, create excited urgency.","Excited urgency = motivation based on enthusiasm (vs. fear-based urgency).","Grammar tip: 'fostering' is a present participle used as a gerund."],
+              qs:[{q:'What is the difference between urgency and excited urgency?',o:['No difference','Urgency=fear based; excited urgency=enthusiasm based','Excited urgency is slower','Urgency is only for leaders'],c:1},
+                  {q:'What does "state of the union" refer to here?',o:['A political speech','The current situation of the organization','Union negotiations','Employee benefits'],c:1}],
+              voc:[{en:'enthusiasm',ar:'حماس'},{en:'fostering',ar:'تعزيز'},{en:'transparently',ar:'بشفافية'},{en:'articulate',ar:'يعبّر بوضوح'},{en:'repercussions',ar:'تبعات'},{en:'milestone',ar:'إنجاز مرحلي'},{en:'acceptance',ar:'قبول'}]
+            },
+            { name:'Barriers to creating enthusiasm for change', dur:'4:05', est:'12 min',
+              tr:`There are common barriers that prevent enthusiasm for change. First, poor communication. If employees don't understand why the change is happening, they can't get excited about it. Second, lack of trust. If leadership has broken trust before, employees will be skeptical. Third, change fatigue. When organizations go through too many changes too quickly, people become exhausted and resistant. Fourth, fear of the unknown. People naturally fear what they don't understand. Finally, perceived loss. When employees feel they will lose something valuable, enthusiasm is nearly impossible.`,
+              tips:["5 barriers: Poor communication, lack of trust, change fatigue, fear of the unknown, perceived loss.","Change fatigue happens when too many changes come too quickly.","Tip: Address barriers proactively — don't wait for resistance to appear."],
+              qs:[{q:'What is "change fatigue"?',o:['Being tired after exercise','Exhaustion from too many changes too quickly','A medical condition','Boredom at work'],c:1}],
+              voc:[{en:'barriers',ar:'حواجز'},{en:'skeptical',ar:'متشكك'},{en:'fatigue',ar:'إرهاق'},{en:'exhausted',ar:'منهَك'},{en:'perceived',ar:'مُدرَك / متصوَّر'}]
+            }
+          ]},
+          { name:'Move Employees to Commitment', videos:[
+            { name:'Helping employees understand how to change', dur:'3:44', est:'11 min',
+              tr:`Let's say employees understand the need for change and are even enthused by it. They'll still want to know specifically how to change. Enter the BEST guide. It's a document that forces change leaders to spell out the Behaviors employees need to exhibit, the Expectations during transition, the Skills employees need to develop, and the Training that will be provided. When employees see this level of clarity and commitment from change leaders, it helps them commit to the change.`,
+              tips:["BEST Guide: Behaviors, Expectations, Skills, Training.","This document creates clarity AND accountability for both leaders and employees.","Addresses 'capacity scarcity' — when employees feel they don't have time for change work."],
+              qs:[{q:'What does BEST stand for?',o:['Best Employees Stay Together','Behaviors, Expectations, Skills, Training','Business Enterprise Strategy Tool','Basic English Speaking Test'],c:1}],
+              voc:[{en:'enthused',ar:'متحمّس'},{en:'spell out',ar:'يوضّح بالتفصيل'},{en:'exhibit',ar:'يُظهر'},{en:'clarity',ar:'وضوح'}]
+            },
+            { name:'How to get employees invested in change', dur:'3:37', est:'11 min',
+              tr:`Most employees react to change as if it's something happening to them, not for them. You can flip that with the circles of commitment: three overlapping dynamics that foster dedication. When employees feel safe, involved, and accountable, they move beyond enthusiasm to commitment. Feeling safe means a psychologically safe environment. Feeling involved means having a place to voice concerns and get engaged. Feeling accountable means understanding roles and responsibilities associated with change.`,
+              tips:["Circles of Commitment: Safe + Involved + Accountable = Commitment.","All three circles are interconnected — strengthening one helps the others.","Grammar tip: 'invested' here is figurative, not literal money investment."],
+              qs:[{q:'What are the three circles of commitment?',o:['Plan, Do, Check','Safe, Involved, Accountable','Fast, Cheap, Good','Vision, Mission, Values'],c:1}],
+              voc:[{en:'invested',ar:'مستثمِر / ملتزم'},{en:'overlapping',ar:'متداخل'},{en:'dynamics',ar:'ديناميكيات'},{en:'accountable',ar:'مسؤول'},{en:'psychologically',ar:'نفسياً'}]
+            },
+            { name:'How to have one-on-one change conversations', dur:'3:52', est:'12 min',
+              tr:`One-on-one conversations are incredibly powerful tools for change management. They allow you to personalize your approach to each employee. Start by asking open-ended questions about how the employee is feeling about the change. Listen actively and show genuine empathy. Address specific concerns individually. Help them see the personal benefits. Close with clear next steps and commitments from both sides.`,
+              tips:["Start with open-ended questions about feelings, not tasks.","Listen actively and show genuine empathy.","Close with clear next steps and mutual commitments."],
+              qs:[{q:'What type of questions should you start with?',o:['Yes/No questions','Open-ended questions','Technical questions','Trick questions'],c:1}],
+              voc:[{en:'one-on-one',ar:'فردي / وجهاً لوجه'},{en:'personalize',ar:'يُخصّص'},{en:'open-ended',ar:'مفتوح'},{en:'genuine',ar:'صادق / حقيقي'}]
+            }
+          ]},
+          { name:'Create New Habits', videos:[
+            { name:'How to make change stick', dur:'4:25', est:'13 min',
+              tr:`Successful change is about changing habits. If you don't change ongoing behaviors, you haven't really changed anything. Four steps to create habit change. First, follow the principles: desired new behaviors must be obvious, attractive, easy to implement and satisfying. Next, help develop new routines. With new routines, employees form familiar patterns leading to habits. Third, keep revisiting what's at stake. People build habits better by reminding themselves why. Finally, stop the slipping. You'll face pockets of resistance and employees slipping back into old ways. You get the behavior you tolerate.`,
+              tips:["Change = changing habits. New behaviors must be: Obvious, Attractive, Easy, Satisfying.","Old behaviors should become: Invisible, Unattractive, Difficult, Unsatisfying.","Help employees build new routines and keep revisiting what's at stake."],
+              qs:[{q:'Successful change is fundamentally about changing ___.', o:['Processes','Habits','Leaders','Buildings'],c:1},
+                  {q:'New behaviors must be obvious, attractive, easy, and ___.',o:['Expensive','Satisfying','Complicated','Mandatory'],c:1}],
+              voc:[{en:'ongoing',ar:'مستمر'},{en:'obvious',ar:'واضح'},{en:'routines',ar:'أنماط روتينية'},{en:'at stake',ar:'على المحك'},{en:'slipping',ar:'انزلاق / تراجع'},{en:'tolerate',ar:'يتسامح'}]
+            }
+          ]}
+        ]
+      },
+      {
+        num:'1.2', name:'How to Lead and Inspire Change', dur:'53min video → 2.65h study', by:'Amber Vanderburg',
+        url:'https://www.linkedin.com/learning/how-to-lead-and-inspire-change',
+        chapters:[
+          { name:'Building Relationships for Change', videos:[
+            { name:'Establish relationships as the newbie', dur:'2:38', est:'8 min',
+              tr:`Three key principles for building relationships: be present, meaning mindful and genuine. Be genuine, get to know people as whole persons. And be intentional, deliberately build relationships on purpose. Relationships are the difference between managing change and leading change.`,
+              tips:["3 principles: Be Present, Be Genuine, Be Intentional.","Relationships = the difference between managing change and leading change.","Grammar tip: 'as the newbie' — 'as' here means 'in the role of'."],
+              qs:[{q:'What are the three principles for building relationships?',o:['Fast, Smart, Bold','Present, Genuine, Intentional','Honest, Kind, Brave','Strategic, Tactical, Operational'],c:1}],
+              voc:[{en:'newbie',ar:'مبتدئ'},{en:'genuine',ar:'صادق'},{en:'intentional',ar:'مقصود'},{en:'mindful',ar:'واعٍ'}]
+            },
+            { name:'Stop, collaborate, and listen', dur:'2:35', est:'8 min',
+              tr:`The importance of active listening and collaboration when entering a new environment. Before proposing change, first understand the current situation by asking questions and truly listening to the answers. Collaboration means working with people, not dictating to them.`,
+              tips:["Before proposing change, first understand the current situation.","Active listening means full concentration, not just hearing words.","Collaboration means working WITH people, not dictating TO them."],
+              qs:[{q:'What is "active listening"?',o:['Hearing while multitasking','Fully concentrating on what is being said','Only listening to leaders','Reading transcripts'],c:1}],
+              voc:[{en:'collaborate',ar:'يتعاون'},{en:'active listening',ar:'الاستماع الفعّال'},{en:'perspective',ar:'منظور'},{en:'dictating',ar:'إملاء / فرض'}]
+            }
+          ]},
+          { name:'Communicating and Managing Change', videos:[
+            { name:'Convey a sense of urgency', dur:'2:42', est:'8 min',
+              tr:`How to communicate the need for change with appropriate urgency while maintaining team morale and focus. Create a burning platform that motivates action without creating panic. Balance the message between the reality of the situation and the hope for the future.`,
+              tips:["Create a 'burning platform' that motivates without creating panic.","Balance reality of the situation with hope for the future.","Vocabulary: 'convey' = communicate/express (formal word)."],
+              qs:[{q:'What does "convey" mean?',o:['To hide','To communicate or express','To delay','To cancel'],c:1}],
+              voc:[{en:'convey',ar:'ينقل / يوصل'},{en:'urgency',ar:'إلحاح'},{en:'mobilize',ar:'يحشد'},{en:'burning platform',ar:'منصة مشتعلة (حالة طوارئ)'}]
+            },
+            { name:'Communicate change', dur:'3:15', est:'10 min',
+              tr:`Dr. Mark Rutland's four-factor communication framework: communicate the right message, send the right message via the right method, communicate at the right time, and communicate to the right audience. For complex emotional messages, face-to-face communication is recommended over email.`,
+              tips:["4-factor framework: Right message, Right method, Right time, Right audience.","For emotional messages → face-to-face. For factual updates → email is fine.","Grammar tip: 'communicate' can be transitive (communicate a message) or intransitive (communicate well)."],
+              qs:[{q:'How many factors are in the communication framework?',o:['Two','Three','Four','Five'],c:2}],
+              voc:[{en:'framework',ar:'إطار عمل'},{en:'appropriate',ar:'مناسب'},{en:'audience',ar:'جمهور'},{en:'method',ar:'طريقة'}]
+            },
+            { name:'Apply agile methodologies', dur:'3:38', est:'11 min',
+              tr:`How agile principles can be applied to change management. Work in sprints, gather feedback frequently, iterate rapidly. Agile change management embraces uncertainty and adapts quickly to new information rather than following a rigid plan from start to finish.`,
+              tips:["Agile change: work in sprints, gather feedback, iterate rapidly.","Embrace uncertainty instead of following rigid plans.","Key vocabulary: sprint, iterate, adaptive, backlog."],
+              qs:[{q:'A key principle of agile methodology is...',o:['Rigid planning','Iterative and adaptive approach','Avoiding feedback','Working alone'],c:1}],
+              voc:[{en:'agile',ar:'رشيق / مرن'},{en:'iterative',ar:'تكراري'},{en:'adaptive',ar:'تكيّفي'},{en:'sprint',ar:'فترة عمل مكثفة'}]
+            }
+          ]}
+        ]
+      },
+      {
+        num:'1.3', name:'Handling Workplace Change as an Employee', dur:'1h58min → 5.9h study', by:'Chris Croft',
+        url:'https://www.linkedin.com/learning/handling-workplace-change-as-an-employee',
+        chapters:[
+          { name:'Understand and Prepare for Change', videos:[
+            { name:'Five reasons why we dislike change', dur:'4:06', est:'12 min',
+              tr:`Five fundamental psychological reasons humans resist change. Fear of the unknown threatens our sense of security. Loss of control makes us feel powerless. Disruption of routines removes our comfort zone. Fear of failure creates anxiety about performing in new ways. Concern about competence makes us worry we won't have the right skills.`,
+              tips:["5 reasons: Fear of unknown, loss of control, disruption of routines, fear of failure, concern about competence.","Understanding these helps leaders address them proactively.","Tip: Employees need reassurance and support during transitions."],
+              qs:[{q:'A common reason people dislike change is...',o:['They enjoy it','Fear of the unknown','They want more work','Change is always good'],c:1}],
+              voc:[{en:'dislike',ar:'يكره'},{en:'psychological',ar:'نفسي'},{en:'comfort zone',ar:'منطقة الراحة'},{en:'uncertainty',ar:'عدم اليقين'},{en:'competence',ar:'كفاءة'}]
+            },
+            { name:'Learn the Change Curve', dur:'3:22', est:'10 min',
+              tr:`The Change Curve describes the emotional journey during workplace change. From initial shock and denial, through frustration and depression, to experimentation and finally integration. Understanding where you are on the curve helps you move through it more quickly.`,
+              tips:["The Change Curve shows the emotional journey during change.","Knowing your position on the curve helps you move through it faster.","Normal to experience shock, denial, frustration before acceptance."],
+              qs:[{q:'The Change Curve describes the ___ journey.',o:['Financial','Emotional','Physical','Technical'],c:1}],
+              voc:[{en:'curve',ar:'منحنى'},{en:'phases',ar:'مراحل'},{en:'integration',ar:'تكامل / اندماج'},{en:'experimentation',ar:'تجريب'}]
+            },
+            { name:'Develop your mental toughness', dur:'4:18', est:'13 min',
+              tr:`Techniques for building mental resilience: challenge negative thoughts, focus on what you can control, maintain healthy routines for sleep and exercise, seek support from trusted colleagues, and practice mindfulness. Mental toughness is a skill that can be developed through consistent practice.`,
+              tips:["Challenge negative thoughts and practice self-compassion.","Focus on what you can control, not what you can't.","Build resilience through routines, exercise, support networks, and mindfulness."],
+              qs:[{q:'"Mental toughness" is...',o:['Physical strength','The ability to handle pressure and adversity','Being stubborn','Ignoring problems'],c:1}],
+              voc:[{en:'mental toughness',ar:'صلابة ذهنية'},{en:'resilience',ar:'مرونة / صمود'},{en:'adversity',ar:'شدائد'},{en:'mindfulness',ar:'الوعي الذاتي'}]
+            }
+          ]},
+          { name:'Restructuring and Career Development', videos:[
+            { name:'Maximize your interpersonal skills', dur:'4:13', est:'13 min',
+              tr:`Strong interpersonal skills help you navigate change and build alliances. Practice active listening, show empathy, communicate clearly and concisely. Build relationships across departments, not just within your own team. These connections become invaluable during times of change.`,
+              tips:["Strong interpersonal skills = active listening, empathy, clear communication.","Build relationships across departments, not just your own team.","Connections are invaluable during organizational change."],
+              qs:[{q:'"Interpersonal skills" are...',o:['Technical skills','Skills for interacting effectively with others','Accounting skills','Writing skills'],c:1}],
+              voc:[{en:'interpersonal',ar:'شخصي / بين الأفراد'},{en:'alliance',ar:'تحالف'},{en:'networking',ar:'بناء العلاقات المهنية'},{en:'invaluable',ar:'لا يُقدّر بثمن'}]
+            },
+            { name:'Create clear career goals', dur:'4:38', est:'14 min',
+              tr:`Set SMART goals: Specific, Measurable, Achievable, Relevant, and Time-bound. During change, review and adjust your career goals regularly. Identify transferable skills that remain valuable regardless of organizational changes. Build a development plan that positions you for future opportunities.`,
+              tips:["SMART goals: Specific, Measurable, Achievable, Relevant, Time-bound.","During change, review and adjust goals regularly.","Identify transferable skills and build development plan for future opportunities."],
+              qs:[{q:'What does SMART stand for?',o:['Simple, Modern, Active, Ready, Tested','Specific, Measurable, Achievable, Relevant, Time-bound','Strong, Meaningful, Authentic, Realistic, Thorough','Strategic, Managed, Aligned, Responsible, Targeted'],c:1}],
+              voc:[{en:'SMART goals',ar:'أهداف ذكية'},{en:'transferable skills',ar:'مهارات قابلة للنقل'},{en:'development plan',ar:'خطة تطوير'},{en:'achievable',ar:'قابل للتحقيق'}]
+            }
+          ]},
+          { name:'New Initiatives and New Roles', videos:[
+            { name:'Learn to work with change', dur:'4:14', est:'13 min',
+              tr:`Embrace change as an opportunity rather than a threat. Volunteers for new projects gain visibility and skills. Ask questions to understand the reasoning behind changes. Offer constructive suggestions rather than complaints. Be flexible and willing to experiment with new approaches.`,
+              tips:["Embrace change as opportunity, not threat.","Volunteer for new projects to gain visibility and skills.","Ask questions and offer constructive suggestions."],
+              qs:[{q:'What is a good approach to new initiatives?',o:['Resist all change','Volunteer and ask questions','Wait and see','Complain loudly'],c:1}],
+              voc:[{en:'embrace',ar:'يتبنّى / يحتضن'},{en:'volunteer',ar:'يتطوّع'},{en:'constructive',ar:'بنّاء'},{en:'flexible',ar:'مرن'},{en:'visibility',ar:'ظهور / بروز'}]
+            },
+            { name:'Succeed in your new job', dur:'3:59', est:'12 min',
+              tr:`The first 90 days in a new role are critical. Listen more than you talk in the first weeks. Build relationships before trying to change things. Understand the culture and unwritten rules. Identify quick wins that demonstrate your value. Ask for feedback regularly and adjust your approach based on what you learn.`,
+              tips:["First 90 days are critical.","Listen more than you talk initially.","Build relationships before proposing changes.","Identify quick wins and ask for regular feedback."],
+              qs:[{q:'In a new role, you should first...',o:['Change everything','Listen and build relationships','Assert authority immediately','Work alone'],c:1}],
+              voc:[{en:'critical',ar:'حاسم / بالغ الأهمية'},{en:'unwritten rules',ar:'قواعد غير مكتوبة'},{en:'quick wins',ar:'إنجازات سريعة'},{en:'feedback',ar:'تغذية راجعة'}]
+            }
+          ]}
+        ]
+      },
+      {
+        num:'1.4', name:'Advocating for Change in Your Organization', dur:'24min → 1.2h study', by:'Dereca Blackmon',
+        url:'https://www.linkedin.com/learning/advocating-for-change-in-your-organization',
+        chapters:[
+          { name:'Building the Case for Change', videos:[
+            { name:'Identifying the need for change', dur:'2:57', est:'9 min',
+              tr:`Recognize when organizational change is needed by looking for warning signs: declining performance, customer complaints, employee disengagement, competitive pressure. Gather data and evidence to support your case. Understand the root cause, not just the symptoms.`,
+              tips:["Look for warning signs: declining performance, complaints, disengagement, competition.","Gather data and evidence to support your case.","Focus on root cause, not just symptoms."],
+              qs:[{q:'"Advocate" means to...',o:['Oppose','Publicly support or recommend','Ignore','Delay'],c:1}],
+              voc:[{en:'advocate',ar:'يدافع عن / يناصر'},{en:'identify',ar:'يحدد'},{en:'disengagement',ar:'عدم مشاركة'},{en:'root cause',ar:'السبب الجذري'}]
+            },
+            { name:'Making the business case for change', dur:'3:40', est:'11 min',
+              tr:`Construct a compelling business case that demonstrates value. Include current state analysis, proposed changes, expected benefits, required resources, timeline, and risk assessment. Use data and stories to make your case persuasive. Present alternatives and explain why your recommendation is best.`,
+              tips:["Business case includes: current state, proposed changes, benefits, resources, timeline, risks.","Use data AND stories to be persuasive.","Present alternatives and justify your recommendation."],
+              qs:[{q:'A "business case" is a document that...',o:['Describes company history','Justifies a proposed project with expected benefits','Lists employee names','Contains only financial data'],c:1}],
+              voc:[{en:'business case',ar:'حالة أعمال'},{en:'justify',ar:'يبرّر'},{en:'propose',ar:'يقترح'},{en:'persuasive',ar:'مُقنع'},{en:'risk assessment',ar:'تقييم المخاطر'}]
+            },
+            { name:'Mobilizing your allies and champions', dur:'1:04', est:'3 min',
+              tr:`Build a coalition of supporters. Identify key influencers in the organization. Share your vision and get their input. Create momentum by showing growing support. Champions at different levels of the organization help spread the message credibly.`,
+              tips:["Build coalition of supporters and identify key influencers.","Share vision and get input from allies.","Create momentum by showing growing support."],
+              qs:[{q:'"Mobilizing" means...',o:['Buying phones','Gathering and organizing people for action','Moving offices','Sending emails'],c:1}],
+              voc:[{en:'mobilize',ar:'يحشد'},{en:'allies',ar:'حلفاء'},{en:'coalition',ar:'ائتلاف'},{en:'momentum',ar:'زخم'},{en:'credibly',ar:'بمصداقية'}]
+            }
+          ]}
+        ]
+      }
+    ]
+  },
+  {
+    id:'u1', name:'Unit 2: Leadership & Effective Communication', level:'Intermediate', hours:'~14 hours',
+    topics:[
+      {
+        num:'2.1', name:'Mastering Communications as a Leader', dur:'1h16min → 3.8h study', by:'Gina London',
+        url:'https://www.linkedin.com/learning/mastering-communications-as-a-leader',
+        chapters:[
+          { name:'Communication Foundations', videos:[
+            { name:'Embracing your growth mindset', dur:'3:52', est:'12 min',
+              tr:`Carol Dweck's growth mindset concept: leaders can develop and change their characteristics. A fixed mindset believes abilities are set in stone. A growth mindset believes abilities can be developed through dedication and hard work. Any person who interacts with others has leadership impact and influence. Start by assessing where you have fixed mindset beliefs and challenge them.`,
+              tips:["Growth mindset: abilities can be developed through effort.","Fixed mindset: abilities are set in stone.","All interactions have leadership impact — develop your mindset."],
+              qs:[{q:'Who developed the "growth mindset" concept?',o:['Steve Jobs','Carol Dweck','Peter Drucker','Simon Sinek'],c:1},
+                  {q:'A "growth mindset" believes abilities...',o:['Are fixed','Can be developed through effort','Don\'t matter','Are only for leaders'],c:1}],
+              voc:[{en:'growth mindset',ar:'عقلية النمو'},{en:'fixed mindset',ar:'عقلية ثابتة'},{en:'dedication',ar:'تفانٍ'},{en:'influence',ar:'تأثير'}]
+            },
+            { name:'The power of appearance', dur:'4:19', est:'13 min',
+              tr:`Your appearance and presentation send powerful signals about your credibility and leadership. Research shows that people form impressions within seconds of meeting you. Dress appropriately for your industry and role. Maintain good posture and eye contact. Pay attention to grooming and personal hygiene. These non-verbal cues affect how others perceive your competence and authority.`,
+              tips:["First impressions form in seconds — appearance matters.","Dress for your industry and role.","Good posture, eye contact, and grooming signal competence.","Non-verbal communication often matters more than words."],
+              qs:[{q:'How quickly do people form impressions?',o:['Within minutes','Within seconds','After a week','Never'],c:1}],
+              voc:[{en:'appearance',ar:'مظهر'},{en:'credibility',ar:'مصداقية'},{en:'posture',ar:'وضعية الجسد'},{en:'grooming',ar:'العناية الشخصية'}]
+            },
+            { name:'AIM strategy: Audience, Intent, Message', dur:'1:13', est:'4 min',
+              tr:`AIM is a communication framework. Analyze your Audience: Who are they? What do they know? What do they need? Determine your Intent: What do you want them to understand, feel, or do? Craft your Message: Make it clear, concise, and tailored to the audience. This framework helps you communicate more effectively in every situation.`,
+              tips:["AIM: Audience, Intent, Message.","Analyze: Who? What they know? What they need?","Intent: What should they understand, feel, or do?","Message: Clear, concise, audience-tailored."],
+              qs:[{q:'What does AIM stand for?',o:['Act, Inform, Motivate','Audience, Intent, Message','Analysis, Impact, Measurement','Authority, Information, Method'],c:1}],
+              voc:[{en:'audience',ar:'جمهور'},{en:'intent',ar:'نية / قصد'},{en:'analyze',ar:'يحلّل'},{en:'tailor',ar:'يصمّم / يخصّص'}]
+            },
+            { name:'Handling difficult questions', dur:'2:43', est:'8 min',
+              tr:`When faced with difficult questions, pause before answering. Take a breath and consider your response. If you don't know the answer, admit it honestly. Offer to find the information and follow up. If the question is hostile, stay calm and professional. Reframe the question if necessary. Never get defensive or angry. Your composure and honesty build credibility.`,
+              tips:["Pause and breathe before answering difficult questions.","If you don't know, admit it honestly and offer to follow up.","Stay calm and professional with hostile questions.","Your composure and honesty build credibility."],
+              qs:[{q:'When you don\'t know an answer, you should...',o:['Make something up','Admit it and offer to find out','Ignore the question','Blame someone else'],c:1}],
+              voc:[{en:'difficult',ar:'صعب'},{en:'hostile',ar:'عدائي'},{en:'composure',ar:'هدوء الأعصاب'},{en:'credibility',ar:'مصداقية'}]
+            }
+          ]}
+        ]
+      }
+    ]
+  },
+  {
+    id:'u2', name:'Unit 3: Advanced Leadership Topics', level:'Advanced', hours:'~14 hours',
+    topics:[
+      {
+        num:'3.1', name:'Advanced Leadership Essentials', dur:'TBD', by:'Various',
+        url:'https://www.linkedin.com/learning/',
+        chapters:[
+          { name:'Strategic Leadership', videos:[
+            { name:'Developing strategic thinking', dur:'3:00', est:'9 min',
+              tr:`Strategic thinking is the ability to see the big picture while managing details. It involves analyzing trends, anticipating challenges, and planning ahead. Leaders who think strategically align daily actions with long-term vision. They ask questions about future scenarios and prepare contingency plans.`,
+              tips:["Strategic thinking = big picture + detail management.","Analyze trends and anticipate challenges.","Align daily actions with long-term vision."],
+              qs:[{q:'Strategic thinking involves...',o:['Only focusing on today','Seeing the big picture','Ignoring the future','Avoiding details'],c:1}],
+              voc:[{en:'strategic',ar:'إستراتيجي'},{en:'anticipate',ar:'يتوقع'},{en:'contingency',ar:'حالة طوارئ'},{en:'align',ar:'يواءم'}]
+            }
+          ]}
+        ]
+      }
+    ]
+  }
+];
+
+function render() {
+  const root = document.getElementById('root');
+  let h = '';
+
+  DATA.forEach(u => {
+    const uId = u.id;
+    h += `<div class="unit" id="${uId}">
+      <div class="unit-hdr" onclick="tog(this)">
+        <div class="unit-num">${u.id.slice(-1)}</div>
+        <div class="unit-info">
+          <h3>${u.name}</h3>
+          <div class="unit-meta"><span>${u.level}</span><span>${u.hours}</span></div>
+        </div>
+        ${ICO.chev}
+      </div>
+      <div class="unit-body">`;
+
+    u.topics.forEach(topic => {
+      h += `<div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 14px;background:#F9FAFB;border-radius:10px;border:1px solid var(--border)">
+          <span style="font-size:14px;font-weight:700;color:var(--primary)">${topic.num}</span>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600">${topic.name}</div>
+            <div style="font-size:11px;color:var(--text-sec)">${topic.dur} &middot; ${topic.by}</div>
+          </div>
+          <a href="${topic.url}" target="_blank" class="li-link">${ICO.link} LinkedIn</a>
+        </div>`;
+
+      topic.chapters.forEach((ch, ci) => {
+        const chId = `ch_${topic.num}_${ci}`;
+        const chTime = ch.videos.reduce((s,v) => {
+          const [m,sec] = v.dur.split(':').map(Number);
+          return s + m + (sec||0)/60;
+        }, 0);
+        h += `<div class="chapter" id="${chId}">
+          <div class="ch-hdr" onclick="tog(this)">
+            <span class="ch-num">${ci+1}.</span>
+            <span class="ch-name">${ch.name}</span>
+            <span class="ch-time">${Math.round(chTime)} min</span>
+            ${ICO.chevS}
+          </div>
+          <div class="ch-body">`;
+
+        ch.videos.forEach((vid, vi) => {
+          const vId = `v_${topic.num}_${ci}_${vi}`;
+          const ckId = `ck_${topic.num}_${ci}_${vi}`;
+          const vidKey = `${topic.num}_${ci}_${vi}`;
+
+          h += `<div class="vid" id="${vId}">
+            <div class="vid-hdr" onclick="tog(this)">
+              <div class="vid-play">${ICO.play}</div>
+              <div class="vid-info">
+                <div class="vid-name">${vid.name}</div>
+                <div class="vid-dur">${vid.dur} &middot; Study: ${vid.est}</div>
+              </div>
+              <div class="vid-actions">
+                <div style="display:flex;align-items:center;gap:4px">
+                  <span class="score-badge" id="badge_${ckId}">0/${vid.qs ? vid.qs.length : 0}</span>
+                  <div class="comp-chk locked" id="${ckId}" onclick="event.stopPropagation();toggleDone('${ckId}')">
+                    <span class="ck-mark"></span>
+                    <div class="comp-date"></div>
+                  </div>
+                </div>
+                ${ICO.chevV}
+              </div>
+            </div>
+            <div class="vid-body">`;
+
+          // Transcript
+          if (vid.tr) {
+            h += `<div class="tr-label">${ICO.doc} Transcript</div>
+              <div class="tr-box">${colorize(vid.tr)}</div>`;
+          }
+
+          // Tips Box
+          if (vid.tips && vid.tips.length) {
+            h += `<div class="tips-box">
+              <div class="tips-title">${ICO.bulb} Key Takeaways & Study Tips</div>
+              <ul class="tips-list">`;
+            vid.tips.forEach(tip => {
+              h += `<li>${tip}</li>`;
+            });
+            h += `</ul></div>`;
+          }
+
+          // Questions
+          if (vid.qs && vid.qs.length) {
+            h += `<div class="q-sec"><div class="q-title">${ICO.help} Comprehension & Grammar Questions</div>`;
+            vid.qs.forEach((q, qi) => {
+              const qn = `q_${topic.num}_${ci}_${vi}_${qi}`;
+              h += `<div class="q-item"><p>${qi+1}. ${q.q}</p>`;
+              q.o.forEach((o, oi) => {
+                h += `<label><input type="radio" name="${qn}" value="${oi}"> ${o}</label>`;
+              });
+              h += `<button class="q-btn" onclick="chkAns('${qn}',${q.c},'${ckId}',${vid.qs.length},this)">Check</button>
+                <div class="q-res" id="r_${qn}"></div></div>`;
+            });
+            h += `</div>`;
+          }
+
+          // Vocabulary
+          if (vid.voc && vid.voc.length) {
+            h += `<div class="voc-sec"><div class="voc-title">${ICO.book} Key Vocabulary</div>
+              <table class="voc-tbl"><thead><tr><th>Word</th><th>Translation</th><th></th></tr></thead><tbody>`;
+            vid.voc.forEach(v => {
+              h += `<tr><td style="font-weight:500">${v.en}</td><td>${v.ar}</td>
+                <td><button class="spk" onclick="event.stopPropagation();speak('${v.en.replace(/'/g,"\\'")}')">
+                ${ICO.vol}</button></td></tr>`;
+            });
+            h += `</tbody></table></div>`;
+          }
+
+          h += `</div></div>`;
+        });
+
+        h += `</div></div>`;
+      });
+
+      h += `</div>`;
+    });
+
+    h += `</div></div>`;
+  });
+
+  h += `</div></div>`;
+
+  root.innerHTML = h;
+
+  // Initialize scores tracking
+  document.querySelectorAll('.comp-chk').forEach(ck => {
+    const vidKey = ck.id;
+    if (!scores[vidKey]) {
+      scores[vidKey] = { correct: new Set(), total: 0 };
+      const badge = document.getElementById(`badge_${vidKey}`);
+      if (badge) {
+        const totalMatch = badge.textContent.match(/\/(\d+)/);
+        scores[vidKey].total = totalMatch ? parseInt(totalMatch[1]) : 0;
+      }
+    }
+  });
+
+  loadSaved();
+}
+
+function tog(el) { el.parentElement.classList.toggle('open'); }
+
+function goUnit(id) {
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('open'); el.scrollIntoView({behavior:'smooth',block:'start'}); }
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function updateScoreBadge(ckId) {
+  const badge = document.getElementById(`badge_${ckId}`);
+  if (badge && scores[ckId]) {
+    const correct = scores[ckId].correct.size;
+    const total = scores[ckId].total;
+    badge.textContent = `${correct}/${total}`;
+    if (correct === total && total > 0) {
+      badge.classList.add('perfect');
+    } else {
+      badge.classList.remove('perfect');
+    }
+  }
+}
+
+function unlockIfComplete(ckId) {
+  if (scores[ckId] && scores[ckId].correct.size === scores[ckId].total && scores[ckId].total > 0) {
+    const ckEl = document.getElementById(ckId);
+    if (ckEl) {
+      ckEl.classList.remove('locked');
+    }
+  }
+}
+
+function toggleDone(id) {
+  const el = document.getElementById(id);
+  if (el.classList.contains('locked')) return;
+
+  const dt = el.querySelector('.comp-date');
+  if (el.classList.contains('done')) {
+    el.classList.remove('done');
+    el.querySelector('.ck-mark').textContent = '';
+    dt.textContent = '';
+    localStorage.removeItem(id);
+  } else {
+    el.classList.add('done');
+    el.querySelector('.ck-mark').textContent = '\u2713';
+    const now = new Date();
+    dt.textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    localStorage.setItem(id, now.toISOString());
+  }
+  updProg();
+}
+
+function loadSaved() {
+  document.querySelectorAll('.comp-chk').forEach(ck => {
+    const s = localStorage.getItem(ck.id);
+    if (s) {
+      ck.classList.add('done');
+      ck.querySelector('.ck-mark').textContent = '\u2713';
+      const d = new Date(s);
+      ck.querySelector('.comp-date').textContent = d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    }
+  });
+  updProg();
+}
+
+function updProg() {
+  const all = document.querySelectorAll('.comp-chk');
+  const done = document.querySelectorAll('.comp-chk.done').length;
+  const pct = all.length ? Math.round(done/all.length*100) : 0;
+  document.getElementById('pBar').style.width = pct+'%';
+  document.getElementById('pPct').textContent = pct+'%';
+  document.getElementById('pDone').textContent = done;
+  document.getElementById('pTotal').textContent = all.length;
+}
+
+function chkAns(qn, correct, ckId, totalQs, btn) {
+  const sel = document.querySelector(`input[name="${qn}"]:checked`);
+  const res = document.getElementById(`r_${qn}`);
+  if (!sel) { res.className='q-res no'; res.style.display='block'; res.textContent='Please select an answer first.'; return; }
+
+  const questionIndex = parseInt(qn.split('_').pop());
+  const isCorrect = parseInt(sel.value) === correct;
+
+  if (isCorrect) {
+    res.className='q-res ok'; res.style.display='block'; res.textContent='Correct!';
+
+    // Track correct answer
+    if (!scores[ckId]) {
+      scores[ckId] = { correct: new Set(), total: totalQs };
+    }
+    scores[ckId].correct.add(questionIndex);
+
+    // Update badge and unlock if all correct
+    updateScoreBadge(ckId);
+    unlockIfComplete(ckId);
+  } else {
+    res.className='q-res no'; res.style.display='block'; res.textContent='Incorrect. Try again!';
+  }
+}
+
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang='en-US'; u.rate=0.85;
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Google'))
+            ||voices.find(v=>v.lang.startsWith('en-US'))
+            ||voices.find(v=>v.lang.startsWith('en'));
+    if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }
+}
+
+if('speechSynthesis' in window) speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+
+render();
+</script>
+</body>
+</html>
