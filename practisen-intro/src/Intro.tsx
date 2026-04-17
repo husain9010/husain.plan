@@ -2,17 +2,12 @@ import React from "react";
 import {
   AbsoluteFill,
   Easing,
+  Img,
   interpolate,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { loadFont as loadMontserrat } from "@remotion/google-fonts/Montserrat";
-import { Logo } from "./Logo";
-
-const { fontFamily: montserrat } = loadMontserrat("normal", {
-  weights: ["400", "600", "700", "800"],
-  subsets: ["latin"],
-});
 
 const NAVY = "#1A1AAA";
 const LIGHT_BLUE = "#D6E4F5";
@@ -21,25 +16,28 @@ const ACCENT = "#2E2EDB";
 const easeOut = Easing.bezier(0.16, 1, 0.3, 1);
 const easeIn = Easing.bezier(0.4, 0, 1, 1);
 
+const FONT_STACK =
+  '"Helvetica Neue", "Arial Black", "Segoe UI", Arial, sans-serif';
+
 export const Intro: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  const logoIn = interpolate(frame, [0, 0.5 * fps], [0, 1], {
+  const iconIn = interpolate(frame, [0, 0.6 * fps], [0, 1], {
     easing: easeOut,
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const wordmarkIn = interpolate(frame, [0.4 * fps, 0.9 * fps], [0, 1], {
-    easing: easeOut,
+  const crossFade = interpolate(frame, [0.7 * fps, 1.2 * fps], [0, 1], {
+    easing: Easing.bezier(0.45, 0, 0.55, 1),
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
   const sloganProgress = interpolate(
     frame,
-    [1.0 * fps, 2.2 * fps],
+    [1.2 * fps, 2.4 * fps],
     [0, 1],
     {
       easing: Easing.bezier(0.45, 0, 0.55, 1),
@@ -48,9 +46,20 @@ export const Intro: React.FC = () => {
     },
   );
 
+  const urlOpacity = interpolate(
+    frame,
+    [1.8 * fps, 2.3 * fps],
+    [0, 1],
+    {
+      easing: easeOut,
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
+
   const fadeOut = interpolate(
     frame,
-    [durationInFrames - 0.4 * fps, durationInFrames],
+    [durationInFrames - 0.35 * fps, durationInFrames],
     [1, 0],
     {
       easing: easeIn,
@@ -59,30 +68,25 @@ export const Intro: React.FC = () => {
     },
   );
 
-  const logoScale = interpolate(logoIn, [0, 1], [0.6, 1]);
-  const logoOpacity = logoIn;
-
-  const wordmarkOpacity = wordmarkIn;
-  const wordmarkX = interpolate(wordmarkIn, [0, 1], [-30, 0]);
+  const iconScale = interpolate(iconIn, [0, 1], [0.55, 1]);
+  const iconOpacity = iconIn * (1 - crossFade);
+  const fullOpacity = crossFade;
+  const fullScale = interpolate(crossFade, [0, 1], [0.92, 1]);
 
   const words = ["English.", "Smarter.", "Faster."];
   const wordTiming = [0, 0.33, 0.66];
 
-  const bgShift = interpolate(frame, [0, durationInFrames], [0, 1]);
-  const bgHue = interpolate(bgShift, [0, 1], [0, 10]);
-
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(circle at 50% 45%, #FFFFFF 0%, #F3F6FC 60%, #E6ECF7 100%)`,
-        fontFamily: montserrat,
+        background: "#FFFFFF",
+        fontFamily: FONT_STACK,
         opacity: fadeOut,
       }}
     >
       <AbsoluteFill
         style={{
-          background: `radial-gradient(circle at ${50 + bgHue}% 55%, ${LIGHT_BLUE}33 0%, transparent 55%)`,
-          opacity: 0.7,
+          background: `radial-gradient(circle at 50% 45%, ${LIGHT_BLUE}40 0%, transparent 55%)`,
         }}
       />
 
@@ -94,81 +98,77 @@ export const Intro: React.FC = () => {
       >
         <div
           style={{
+            position: "relative",
+            width: 1400,
+            height: 500,
             display: "flex",
-            flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
-            gap: 40,
           }}
         >
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 24,
+              position: "absolute",
+              opacity: iconOpacity,
+              transform: `scale(${iconScale})`,
+              filter: `drop-shadow(0 12px 28px ${NAVY}20)`,
             }}
           >
-            <div
-              style={{
-                transform: `scale(${logoScale})`,
-                opacity: logoOpacity,
-                filter: `drop-shadow(0 12px 28px ${NAVY}26)`,
-              }}
-            >
-              <Logo size={220} navy={NAVY} light={LIGHT_BLUE} />
-            </div>
-
-            <div
-              style={{
-                opacity: wordmarkOpacity,
-                transform: `translateX(${wordmarkX}px)`,
-                fontSize: 110,
-                fontWeight: 700,
-                color: NAVY,
-                letterSpacing: -2,
-                lineHeight: 1,
-                WebkitTextStroke: `2px ${LIGHT_BLUE}`,
-              }}
-            >
-              Practis<span style={{ color: ACCENT }}> EN</span>
-            </div>
+            <Img
+              src={staticFile("logo-icon.png")}
+              style={{ width: 1400, height: 500, objectFit: "contain" }}
+            />
           </div>
 
           <div
             style={{
-              display: "flex",
-              gap: 22,
-              marginTop: 10,
-              minHeight: 70,
+              position: "absolute",
+              opacity: fullOpacity,
+              transform: `scale(${fullScale})`,
+              filter: `drop-shadow(0 14px 32px ${NAVY}22)`,
             }}
           >
-            {words.map((w, i) => {
-              const start = wordTiming[i];
-              const end = start + 0.25;
-              const wp = interpolate(sloganProgress, [start, end], [0, 1], {
-                extrapolateLeft: "clamp",
-                extrapolateRight: "clamp",
-                easing: easeOut,
-              });
-              const op = wp;
-              const y = interpolate(wp, [0, 1], [18, 0]);
-              const isAccent = i === 2;
-              return (
-                <span
-                  key={w}
-                  style={{
-                    opacity: op,
-                    transform: `translateY(${y}px)`,
-                    fontSize: 44,
-                    fontWeight: isAccent ? 800 : 600,
-                    color: isAccent ? ACCENT : NAVY,
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  {w}
-                </span>
-              );
-            })}
+            <Img
+              src={staticFile("logo-full.png")}
+              style={{ width: 1400, height: 500, objectFit: "contain" }}
+            />
           </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            gap: 26,
+            marginTop: 40,
+            minHeight: 80,
+          }}
+        >
+          {words.map((w, i) => {
+            const start = wordTiming[i];
+            const end = start + 0.28;
+            const wp = interpolate(sloganProgress, [start, end], [0, 1], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+              easing: easeOut,
+            });
+            const y = interpolate(wp, [0, 1], [22, 0]);
+            const isAccent = i === 2;
+            return (
+              <span
+                key={w}
+                style={{
+                  opacity: wp,
+                  transform: `translateY(${y}px)`,
+                  fontSize: 56,
+                  fontWeight: isAccent ? 900 : 700,
+                  color: isAccent ? ACCENT : NAVY,
+                  letterSpacing: 0.5,
+                }}
+              >
+                {w}
+              </span>
+            );
+          })}
         </div>
       </AbsoluteFill>
 
@@ -176,25 +176,16 @@ export const Intro: React.FC = () => {
         style={{
           justifyContent: "flex-end",
           alignItems: "center",
-          paddingBottom: 70,
+          paddingBottom: 80,
         }}
       >
         <div
           style={{
-            opacity: interpolate(
-              frame,
-              [1.6 * fps, 2.1 * fps],
-              [0, 1],
-              {
-                extrapolateLeft: "clamp",
-                extrapolateRight: "clamp",
-                easing: easeOut,
-              },
-            ),
-            fontSize: 22,
+            opacity: urlOpacity,
+            fontSize: 26,
             color: NAVY,
-            letterSpacing: 4,
-            fontWeight: 500,
+            letterSpacing: 6,
+            fontWeight: 600,
             textTransform: "uppercase",
           }}
         >
