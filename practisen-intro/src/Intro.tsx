@@ -9,6 +9,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { PhoneMockup } from "./PhoneMockup";
 
 const NAVY_DEEP = "#08084A";
 const NAVY = "#1A1AAA";
@@ -142,8 +143,7 @@ const Particles: React.FC<ParticleProps> = ({
 
         const baseX = r1 * width;
         const baseY = r2 * height;
-        const size =
-          sizeRange[0] + r3 * (sizeRange[1] - sizeRange[0]);
+        const size = sizeRange[0] + r3 * (sizeRange[1] - sizeRange[0]);
         const phase = r4 * Math.PI * 2;
 
         const driftX = Math.sin(frame / 30 + phase) * 20 * speed;
@@ -289,6 +289,68 @@ const SparkleIcon: React.FC<{ size: number; color: string }> = ({
   );
 };
 
+const FloatingChip: React.FC<{
+  text: string;
+  color: string;
+  x: number;
+  y: number;
+  delay: number;
+  frame: number;
+  fps: number;
+  icon?: string;
+}> = ({ text, color, x, y, delay, frame, fps, icon }) => {
+  const progress = interpolate(
+    frame,
+    [delay, delay + 0.5 * fps],
+    [0, 1],
+    {
+      easing: spring,
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
+  const exitProgress = interpolate(
+    frame,
+    [delay + 1.6 * fps, delay + 2.0 * fps],
+    [0, 1],
+    {
+      easing: easeIn,
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
+  const floatY = Math.sin(frame / 25 + delay) * 6;
+  const scale = interpolate(progress, [0, 1], [0.6, 1]);
+  const opacity = progress * (1 - exitProgress);
+  const translateY = interpolate(progress, [0, 1], [20, 0]) + floatY;
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        opacity,
+        transform: `translateY(${translateY}px) scale(${scale})`,
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "12px 20px",
+        borderRadius: 999,
+        background: "#FFFFFF",
+        border: `2px solid ${color}`,
+        boxShadow: `0 10px 28px ${color}44, 0 0 24px ${color}55`,
+        fontSize: 20,
+        fontWeight: 700,
+        color: "#0F1640",
+      }}
+    >
+      {icon && <span style={{ fontSize: 22 }}>{icon}</span>}
+      {text}
+    </div>
+  );
+};
+
 export const Intro: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames, width } = useVideoConfig();
@@ -297,7 +359,7 @@ export const Intro: React.FC = () => {
 
   const bgDark = interpolate(
     frame,
-    [0, s(1.2), s(2.2), durationInFrames],
+    [0, s(1.1), s(2.0), durationInFrames],
     [1, 1, 0.22, 0.15],
     {
       easing: easeInOut,
@@ -322,7 +384,7 @@ export const Intro: React.FC = () => {
     extrapolateRight: "clamp",
   });
 
-  const crossFade = interpolate(frame, [s(1.1), s(1.7)], [0, 1], {
+  const crossFade = interpolate(frame, [s(1.0), s(1.5)], [0, 1], {
     easing: easeInOut,
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -334,7 +396,29 @@ export const Intro: React.FC = () => {
     easing: easeOut,
   });
 
-  const shineProgress = interpolate(frame, [s(0.8), s(1.6)], [0, 1], {
+  const logoShrink = interpolate(frame, [s(1.5), s(2.0)], [1, 0.45], {
+    easing: easeOut,
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const logoUp = interpolate(frame, [s(1.5), s(2.0)], [0, -400], {
+    easing: easeOut,
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  const logoReturn = interpolate(frame, [s(4.4), s(4.9)], [0, 1], {
+    easing: easeOut,
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const logoScaleFinal = interpolate(logoReturn, [0, 1], [0.45, 0.75]);
+  const logoYFinal = interpolate(logoReturn, [0, 1], [-400, -280]);
+
+  const finalLogoScale = logoShrink * (1 - logoReturn) + logoScaleFinal * logoReturn;
+  const finalLogoY = logoUp * (1 - logoReturn) + logoYFinal * logoReturn;
+
+  const shineProgress = interpolate(frame, [s(0.8), s(1.4)], [0, 1], {
     easing: easeInOut,
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -342,7 +426,7 @@ export const Intro: React.FC = () => {
 
   const raysOpacity = interpolate(
     frame,
-    [s(0.3), s(1.0), s(3.0), s(3.8)],
+    [s(0.3), s(1.0), s(4.5), s(5.2)],
     [0, 0.9, 0.9, 0.0],
     {
       easing: easeInOut,
@@ -353,7 +437,7 @@ export const Intro: React.FC = () => {
 
   const neuralOpacity = interpolate(
     frame,
-    [s(0.2), s(1.2), s(3.2), s(4.0)],
+    [s(0.2), s(1.2), s(5.0), s(5.4)],
     [0, 0.85, 0.85, 0.2],
     {
       easing: easeInOut,
@@ -362,9 +446,25 @@ export const Intro: React.FC = () => {
     },
   );
 
+  const phoneEntry = interpolate(frame, [s(2.0), s(2.6)], [0, 1], {
+    easing: spring,
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const phoneExit = interpolate(frame, [s(4.2), s(4.8)], [0, 1], {
+    easing: easeIn,
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const msgFrame = frame - s(2.3);
+
+  const sloganStart = s(4.7);
+  const words = ["English.", "Smarter.", "Faster."];
+  const wordStart = [sloganStart, sloganStart + s(0.25), sloganStart + s(0.5)];
+
   const underlineProgress = interpolate(
     frame,
-    [s(2.8), s(3.6)],
+    [s(5.3), s(6.0)],
     [0, 1],
     {
       easing: easeOut,
@@ -373,18 +473,18 @@ export const Intro: React.FC = () => {
     },
   );
 
-  const aiBadgeProgress = interpolate(frame, [s(3.0), s(3.6)], [0, 1], {
+  const aiBadgeProgress = interpolate(frame, [s(5.5), s(6.0)], [0, 1], {
     easing: spring,
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const urlOpacity = interpolate(frame, [s(3.4), s(3.9)], [0, 1], {
+  const urlOpacity = interpolate(frame, [s(5.9), s(6.4)], [0, 1], {
     easing: easeOut,
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const urlY = interpolate(frame, [s(3.4), s(3.9)], [18, 0], {
+  const urlY = interpolate(frame, [s(5.9), s(6.4)], [18, 0], {
     easing: easeOut,
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -400,9 +500,6 @@ export const Intro: React.FC = () => {
       extrapolateRight: "clamp",
     },
   );
-
-  const words = ["English.", "Smarter.", "Faster."];
-  const wordStart = [s(1.7), s(2.0), s(2.3)];
 
   const logoBreath = 1 + Math.sin(frame / 40) * 0.012;
 
@@ -429,7 +526,7 @@ export const Intro: React.FC = () => {
         }}
       />
 
-      <NeuralNet opacity={neuralOpacity * 0.9} seed="ai" />
+      <NeuralNet opacity={neuralOpacity * 0.85} seed="ai" />
 
       <AbsoluteFill style={{ opacity: bgDark }}>
         <Particles
@@ -459,15 +556,19 @@ export const Intro: React.FC = () => {
         <div
           style={{
             position: "absolute",
+            top: "50%",
+            left: "50%",
             width: 900,
             height: 900,
+            marginLeft: -450,
+            marginTop: -450,
             borderRadius: "50%",
             background: `radial-gradient(circle, ${ACCENT}55 0%, transparent 55%)`,
             filter: "blur(40px)",
             opacity: interpolate(
               frame,
-              [s(0.2), s(1.2), s(3.4), durationInFrames],
-              [0, 0.85, 0.85, 0.2],
+              [s(0.2), s(1.2), s(5.2), durationInFrames],
+              [0, 0.75, 0.75, 0.2],
               {
                 easing: easeInOut,
                 extrapolateLeft: "clamp",
@@ -480,7 +581,10 @@ export const Intro: React.FC = () => {
 
         <div
           style={{
-            position: "relative",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: `translate(-50%, -50%) translateY(${finalLogoY}px) scale(${finalLogoScale})`,
             width: 1400,
             height: 460,
             display: "flex",
@@ -520,7 +624,7 @@ export const Intro: React.FC = () => {
                 style={{ width: 1400, height: 460, objectFit: "contain" }}
               />
               <ShineSweep
-                progress={interpolate(frame, [s(1.9), s(2.6)], [0, 1], {
+                progress={interpolate(frame, [s(1.1), s(1.5)], [0, 1], {
                   extrapolateLeft: "clamp",
                   extrapolateRight: "clamp",
                 })}
@@ -530,13 +634,76 @@ export const Intro: React.FC = () => {
           </div>
         </div>
 
+        {phoneEntry > 0 && phoneExit < 1 && (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -22%)",
+            }}
+          >
+            <PhoneMockup
+              entryProgress={phoneEntry}
+              exitProgress={phoneExit}
+              msgFrame={msgFrame}
+              fps={fps}
+            />
+          </div>
+        )}
+
+        <FloatingChip
+          text="Real conversations"
+          icon="💬"
+          color={AI_CYAN}
+          x={140}
+          y={340}
+          delay={s(2.4)}
+          frame={frame}
+          fps={fps}
+        />
+        <FloatingChip
+          text="Instant feedback"
+          icon="⚡"
+          color={ACCENT}
+          x={1430}
+          y={380}
+          delay={s(2.7)}
+          frame={frame}
+          fps={fps}
+        />
+        <FloatingChip
+          text="Pronunciation coach"
+          icon="🎙️"
+          color={GOLD}
+          x={130}
+          y={690}
+          delay={s(3.0)}
+          frame={frame}
+          fps={fps}
+        />
+        <FloatingChip
+          text="Personalized lessons"
+          icon="🎯"
+          color={AI_CYAN}
+          x={1400}
+          y={740}
+          delay={s(3.3)}
+          frame={frame}
+          fps={fps}
+        />
+
         <div
           style={{
             display: "flex",
-            gap: 30,
-            marginTop: 40,
+            gap: 26,
+            marginTop: 180,
             minHeight: 100,
             alignItems: "center",
+            opacity: interpolate(frame, [sloganStart - s(0.1), sloganStart + s(0.1)], [0, 1], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            }),
           }}
         >
           {words.map((w, i) => {
@@ -552,8 +719,7 @@ export const Intro: React.FC = () => {
             const isAccent = i === 2;
             const textColor = isAccent ? ACCENT : NAVY;
             const darkTextColor = isAccent ? "#9EB5FF" : "#FFFFFF";
-            const currentColor =
-              bgDark > 0.5 ? darkTextColor : textColor;
+            const currentColor = bgDark > 0.5 ? darkTextColor : textColor;
 
             return (
               <span
@@ -561,7 +727,7 @@ export const Intro: React.FC = () => {
                 style={{
                   opacity: wp,
                   transform: `translateY(${y}px) scale(${scale})`,
-                  fontSize: 62,
+                  fontSize: 60,
                   fontWeight: isAccent ? 900 : 700,
                   color: currentColor,
                   letterSpacing: 1,
@@ -580,7 +746,7 @@ export const Intro: React.FC = () => {
 
         <div
           style={{
-            marginTop: 14,
+            marginTop: 12,
             width: 620,
             height: 3,
             position: "relative",
@@ -603,7 +769,7 @@ export const Intro: React.FC = () => {
 
         <div
           style={{
-            marginTop: 28,
+            marginTop: 22,
             opacity: aiBadgeProgress,
             transform: `translateY(${interpolate(aiBadgeProgress, [0, 1], [20, 0])}px) scale(${interpolate(aiBadgeProgress, [0, 1], [0.85, 1])})`,
             display: "flex",
@@ -623,10 +789,7 @@ export const Intro: React.FC = () => {
             backdropFilter: "blur(10px)",
           }}
         >
-          <SparkleIcon
-            size={28}
-            color={bgDark > 0.5 ? AI_CYAN : ACCENT}
-          />
+          <SparkleIcon size={28} color={bgDark > 0.5 ? AI_CYAN : ACCENT} />
           <span
             style={{
               fontSize: 22,
@@ -634,16 +797,12 @@ export const Intro: React.FC = () => {
               letterSpacing: 5,
               color: bgDark > 0.5 ? "#FFFFFF" : NAVY,
               textTransform: "uppercase",
-              textShadow:
-                bgDark > 0.5 ? `0 0 12px ${AI_CYAN}aa` : "none",
+              textShadow: bgDark > 0.5 ? `0 0 12px ${AI_CYAN}aa` : "none",
             }}
           >
             AI-Powered Learning
           </span>
-          <SparkleIcon
-            size={28}
-            color={bgDark > 0.5 ? AI_CYAN : ACCENT}
-          />
+          <SparkleIcon size={28} color={bgDark > 0.5 ? AI_CYAN : ACCENT} />
         </div>
       </AbsoluteFill>
 
@@ -651,7 +810,7 @@ export const Intro: React.FC = () => {
         style={{
           justifyContent: "flex-end",
           alignItems: "center",
-          paddingBottom: 70,
+          paddingBottom: 60,
         }}
       >
         <div
@@ -663,8 +822,7 @@ export const Intro: React.FC = () => {
             letterSpacing: 8,
             fontWeight: 600,
             textTransform: "uppercase",
-            textShadow:
-              bgDark > 0.5 ? `0 0 18px ${AI_CYAN}aa` : "none",
+            textShadow: bgDark > 0.5 ? `0 0 18px ${AI_CYAN}aa` : "none",
           }}
         >
           practisen.com
