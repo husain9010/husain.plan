@@ -1,0 +1,9 @@
+https://www.pixa.com/share/c244db8c-c0d4-4882-80cf-371347d88b37
+
+# ملاحظة: الرابط أعلاه هو رابط مشاركة Pixa الدائم (يصلح للعرض من المتصفح).
+# لم يتم رفع الملف إلى litterbox.catbox.moe لأن النطاق محجوب من بروكسي Claude
+# (x-deny-reason: host_not_allowed). راجع character_bible.md → قسم "رفع دائم"
+# للخيارات البديلة.
+#
+# Pixa Asset ID (مصدر أصلي دائم داخل مكتبة Pixa):
+# asset_9b90f540f23646148d249c86671c4c57
