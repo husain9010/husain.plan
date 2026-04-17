@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher + Logo Composite</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0a0a0a;
+    color: #eee;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  h1 { font-size: 18px; margin-bottom: 12px; color: #f0a040; }
+  p.hint { font-size: 13px; margin-bottom: 16px; color: #888; }
+
+  .stage {
+    position: relative;
+    width: 100%;
+    max-width: 1344px;
+    aspect-ratio: 16 / 9;
+    margin: 0 auto 20px;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+  .stage img.bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+  }
+
+  .logo-wrap {
+    position: absolute;
+    width: 18%;
+    top: 18%;
+    left: 10%;
+    cursor: move;
+    transform-origin: center;
+    filter: drop-shadow(6px 8px 12px rgba(0,0,0,0.85))
+            drop-shadow(0 0 25px rgba(255, 165, 50, 0.25));
+    transition: filter 0.2s;
+  }
+  .logo-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    mix-blend-mode: screen;
+    opacity: 0.92;
+    filter: brightness(0.95) contrast(1.05) sepia(0.15) saturate(1.1)
+            hue-rotate(-5deg);
+  }
+  .logo-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -8%;
+    background: radial-gradient(ellipse at center,
+                rgba(255, 160, 60, 0.18) 0%,
+                transparent 70%);
+    z-index: -1;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .controls {
+    max-width: 1344px;
+    margin: 0 auto;
+    background: #151515;
+    padding: 16px;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .control { display: flex; flex-direction: column; gap: 4px; }
+  .control label {
+    font-size: 12px;
+    color: #bbb;
+    display: flex;
+    justify-content: space-between;
+  }
+  .control label .val { color: #f0a040; font-variant-numeric: tabular-nums; }
+  .control input[type="range"] { width: 100%; accent-color: #f0a040; }
+  .control select, .control input[type="text"] {
+    background: #0a0a0a;
+    border: 1px solid #333;
+    color: #eee;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .actions {
+    max-width: 1344px;
+    margin: 12px auto 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .actions button {
+    background: #f0a040;
+    color: #111;
+    border: 0;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .actions button.secondary { background: #333; color: #eee; }
+  .actions button:hover { opacity: 0.9; }
+
+  .tips {
+    max-width: 1344px;
+    margin: 20px auto;
+    padding: 16px;
+    background: #151515;
+    border-right: 3px solid #f0a040;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .tips strong { color: #f0a040; }
+  kbd {
+    background: #333;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    border: 1px solid #555;
+  }
+</style>
+</head>
+<body>
+
+<h1>دمج الشعار فوق صورة المعلم (CSS Composite)</h1>
+<p class="hint">اسحب الشعار بالماوس لتحريكه، واستخدم أزرار التحكم لضبط الحجم والإضاءة والأسلوب. بعد الضبط، التقط لقطة شاشة للنتيجة.</p>
+
+<div class="stage" id="stage">
+  <img class="bg" id="bg"
+       src="https://assets.pixelcut.app/org/015be3b9-7117-4a7a-ab2c-0954f3ef3e2e/media/9b90f540-f236-4614-8d24-9c86671c4c57_1776448252.png?Expires=1776535614&KeyName=px-assets-key-1&Signature=ufdCvww7eKi136dbya1iIifekLI="
+       alt="teacher background"
+       crossorigin="anonymous">
+  <div class="logo-wrap" id="logoWrap">
+    <img id="logo"
+         src="https://raw.githubusercontent.com/husain9010/husain.plan/claude/coffee-ad-campaign-4sDsF/assets/2.png"
+         alt="logo"
+         crossorigin="anonymous">
+  </div>
+</div>
+
+<div class="controls">
+  <div class="control">
+    <label>الحجم <span class="val" id="sizeVal">18%</span></label>
+    <input type="range" id="size" min="5" max="45" value="18">
+  </div>
+  <div class="control">
+    <label>أفقي (X) <span class="val" id="xVal">10%</span></label>
+    <input type="range" id="x" min="0" max="90" value="10">
+  </div>
+  <div class="control">
+    <label>عمودي (Y) <span class="val" id="yVal">18%</span></label>
+    <input type="range" id="y" min="0" max="90" value="18">
+  </div>
+  <div class="control">
+    <label>الدوران <span class="val" id="rotVal">0°</span></label>
+    <input type="range" id="rot" min="-20" max="20" value="0">
+  </div>
+  <div class="control">
+    <label>الشفافية <span class="val" id="opVal">0.92</span></label>
+    <input type="range" id="op" min="0.3" max="1" step="0.02" value="0.92">
+  </div>
+  <div class="control">
+    <label>السطوع <span class="val" id="brVal">0.95</span></label>
+    <input type="range" id="br" min="0.4" max="1.5" step="0.02" value="0.95">
+  </div>
+  <div class="control">
+    <label>الدفء (sepia) <span class="val" id="seVal">0.15</span></label>
+    <input type="range" id="se" min="0" max="0.8" step="0.02" value="0.15">
+  </div>
+  <div class="control">
+    <label>وهج خلفي <span class="val" id="glVal">25</span></label>
+    <input type="range" id="gl" min="0" max="80" value="25">
+  </div>
+  <div class="control">
+    <label>ظل مسقط <span class="val" id="shVal">12</span></label>
+    <input type="range" id="sh" min="0" max="40" value="12">
+  </div>
+  <div class="control">
+    <label>أسلوب الدمج (blend)</label>
+    <select id="blend">
+      <option value="screen" selected>Screen (مضيء — للشعار الفاتح)</option>
+      <option value="normal">Normal (عادي)</option>
+      <option value="multiply">Multiply (داكن)</option>
+      <option value="overlay">Overlay (متوازن)</option>
+      <option value="soft-light">Soft Light (ناعم)</option>
+      <option value="hard-light">Hard Light (حاد)</option>
+      <option value="lighten">Lighten</option>
+      <option value="color-dodge">Color Dodge (ساطع جداً)</option>
+    </select>
+  </div>
+</div>
+
+<div class="actions">
+  <button onclick="resetDefaults()" class="secondary">إعادة الضبط</button>
+  <button onclick="presetNeon()">🟠 وضع النيون</button>
+  <button onclick="presetMetal()">⚪ وضع المعدن المصقول</button>
+  <button onclick="presetBacklit()">💡 وضع الإضاءة الخلفية</button>
+  <button onclick="copySettings()">📋 نسخ الإعدادات</button>
+</div>
+
+<div class="tips">
+  <strong>نصائح للحصول على دمج واقعي:</strong><br>
+  • ضع الشعار على المساحة الخشبية/الجدار الفارغ في الخلفية (يسار أو يمين المذيع).<br>
+  • استخدم blend mode <kbd>screen</kbd> أو <kbd>color-dodge</kbd> ليبدو كنيون/إضاءة خلفية.<br>
+  • ارفع "الوهج الخلفي" لمحاكاة شعار مُضاء من الخلف.<br>
+  • قلّل السطوع قليلاً (~0.85) ليمتزج مع الإضاءة المُعتمة للاستوديو.<br>
+  • الـ sepia يعطيه لوناً دافئاً يطابق إضاءة الـ Edison bulbs.<br>
+  • <strong>لالتقاط الصورة:</strong> <kbd>Ctrl+Shift+S</kbd> في Firefox، أو امتداد GoFullPage في Chrome، أو استخدم DevTools → Capture node screenshot على عنصر <code>#stage</code>.
+</div>
+
+<script>
+const logoWrap = document.getElementById('logoWrap');
+const logo = document.getElementById('logo');
+const stage = document.getElementById('stage');
+
+const ids = ['size','x','y','rot','op','br','se','gl','sh','blend'];
+const els = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+const vals = Object.fromEntries(ids.slice(0,-1).map(id => [id, document.getElementById(id+'Val')]));
+
+function update() {
+  const s = els.size.value, x = els.x.value, y = els.y.value;
+  const rot = els.rot.value, op = els.op.value, br = els.br.value;
+  const se = els.se.value, gl = els.gl.value, sh = els.sh.value;
+  const blend = els.blend.value;
+
+  logoWrap.style.width = s + '%';
+  logoWrap.style.left = x + '%';
+  logoWrap.style.top = y + '%';
+  logoWrap.style.transform = `rotate(${rot}deg)`;
+  logoWrap.style.filter =
+    `drop-shadow(${sh/2}px ${sh}px ${sh*1.5}px rgba(0,0,0,0.85)) ` +
+    `drop-shadow(0 0 ${gl}px rgba(255, 160, 60, 0.35))`;
+
+  logo.style.opacity = op;
+  logo.style.mixBlendMode = blend;
+  logo.style.filter =
+    `brightness(${br}) contrast(1.05) sepia(${se}) saturate(1.1) hue-rotate(-5deg)`;
+
+  vals.size.textContent = s + '%';
+  vals.x.textContent = x + '%';
+  vals.y.textContent = y + '%';
+  vals.rot.textContent = rot + '°';
+  vals.op.textContent = op;
+  vals.br.textContent = br;
+  vals.se.textContent = se;
+  vals.gl.textContent = gl;
+  vals.sh.textContent = sh;
+}
+ids.forEach(id => els[id].addEventListener('input', update));
+
+// Drag to reposition
+let dragging = false, startX=0, startY=0, startLX=0, startLY=0;
+logoWrap.addEventListener('mousedown', (e) => {
+  dragging = true;
+  startX = e.clientX; startY = e.clientY;
+  startLX = parseFloat(els.x.value); startLY = parseFloat(els.y.value);
+  e.preventDefault();
+});
+window.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  const rect = stage.getBoundingClientRect();
+  const dx = (e.clientX - startX) / rect.width * 100;
+  const dy = (e.clientY - startY) / rect.height * 100;
+  els.x.value = Math.max(0, Math.min(90, startLX + dx));
+  els.y.value = Math.max(0, Math.min(90, startLY + dy));
+  update();
+});
+window.addEventListener('mouseup', () => { dragging = false; });
+
+function resetDefaults() {
+  els.size.value=18; els.x.value=10; els.y.value=18;
+  els.rot.value=0; els.op.value=0.92; els.br.value=0.95;
+  els.se.value=0.15; els.gl.value=25; els.sh.value=12;
+  els.blend.value='screen'; update();
+}
+
+function presetNeon() {
+  els.op.value=1; els.br.value=1.3; els.se.value=0.1;
+  els.gl.value=60; els.sh.value=4; els.blend.value='screen'; update();
+}
+function presetMetal() {
+  els.op.value=0.95; els.br.value=0.9; els.se.value=0.25;
+  els.gl.value=8; els.sh.value=20; els.blend.value='overlay'; update();
+}
+function presetBacklit() {
+  els.op.value=0.85; els.br.value=1.1; els.se.value=0.3;
+  els.gl.value=45; els.sh.value=10; els.blend.value='soft-light'; update();
+}
+
+function copySettings() {
+  const settings = ids.reduce((a,id)=>({...a,[id]:els[id].value}),{});
+  navigator.clipboard.writeText(JSON.stringify(settings, null, 2));
+  alert('تم نسخ الإعدادات إلى الحافظة');
+}
+
+update();
+</script>
+
+</body>
+</html>
