@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*assets.pixelcut.app*)",
+      "WebFetch(domain:assets.pixelcut.app)"
+    ]
+  },
+  "sandbox": {
+    "network": {
+      "allowedDomains": ["assets.pixelcut.app"]
+    }
+  }
+}
