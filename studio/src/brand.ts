@@ -1,0 +1,23 @@
+// practisEN brand tokens — sourced from brand-kit/tokens/tokens.json
+export const brand = {
+  primary: "#7030E0",
+  primaryDark: "#5B23BE",
+  accent: "#A78BFA",
+  ink: "#0B0B1E",
+  navy900: "#0A1035",
+  navy800: "#0F1847",
+  navy700: "#17205C",
+  violet50: "#F4EFFF",
+  violet100: "#E7DBFF",
+  violet200: "#CDB4FF",
+  violet300: "#A78BFA",
+  violet700: "#461A94",
+  violet800: "#35126E",
+  walnut: "#3D2817",
+  walnutLight: "#5C3A21",
+  oak: "#7A5436",
+  oakLight: "#A87A4F",
+  warmAmber: "#FFB347",
+  cream: "#F5E9D6",
+  white: "#FFFFFF",
+} as const;

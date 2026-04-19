@@ -1,0 +1,148 @@
+/* practisEN — Design Tokens (CSS variables)
+   Drop this file into your app's global stylesheet.
+   Import fonts from tokens/fonts.css or your own loader. */
+
+:root {
+  /* ── Brand ─────────────────────── */
+  --pn-primary:        #7030E0;   /* violet 500 */
+  --pn-primary-dark:   #5B23BE;   /* violet 600 — hover */
+  --pn-ink:            #0B0B1E;
+  --pn-accent:         #A78BFA;
+
+  /* ── Violet scale ──────────────── */
+  --pn-violet-50:  #F4EFFF;
+  --pn-violet-100: #E7DBFF;
+  --pn-violet-200: #CDB4FF;
+  --pn-violet-300: #A78BFA;
+  --pn-violet-400: #8B5FF0;
+  --pn-violet-500: #7030E0;
+  --pn-violet-600: #5B23BE;
+  --pn-violet-700: #461A94;
+  --pn-violet-800: #35126E;
+  --pn-violet-900: #240B4B;
+
+  /* ── Navy scale ────────────────── */
+  --pn-navy-50:  #F1F2F8;
+  --pn-navy-100: #DFE1EF;
+  --pn-navy-200: #BFC2DE;
+  --pn-navy-300: #8C92C1;
+  --pn-navy-400: #5962A0;
+  --pn-navy-500: #2F3984;
+  --pn-navy-600: #1F2971;
+  --pn-navy-700: #17205C;
+  --pn-navy-800: #0F1847;
+  --pn-navy-900: #0A1035;
+
+  /* ── Ink / text ────────────────── */
+  --pn-ink-1: #0B0B1E;
+  --pn-ink-2: #3A3A55;
+  --pn-ink-3: #6B6B85;
+  --pn-ink-4: #9C9CB3;
+
+  /* ── Surfaces ──────────────────── */
+  --pn-bg:    #FAFAFC;
+  --pn-bg-2:  #F3F2F8;
+  --pn-card:  #FFFFFF;
+  --pn-line:  #E5E4EE;
+  --pn-line-2:#EFEEF4;
+
+  /* ── Semantic ──────────────────── */
+  --pn-success: #10B981;
+  --pn-warning: #F59E0B;
+  --pn-error:   #EF4444;
+  --pn-info:    #7030E0;
+
+  /* ── Typography ────────────────── */
+  --pn-font-display: 'Baloo 2', system-ui, -apple-system, sans-serif;
+  --pn-font-body:    'Nunito',  system-ui, -apple-system, sans-serif;
+  --pn-font-mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  --pn-fw-regular:   400;
+  --pn-fw-medium:    500;
+  --pn-fw-semibold:  600;
+  --pn-fw-bold:      700;
+  --pn-fw-extrabold: 800;
+
+  --pn-fs-xs:   12px;
+  --pn-fs-sm:   13.5px;
+  --pn-fs-base: 15px;
+  --pn-fs-md:   17px;
+  --pn-fs-lg:   19px;
+  --pn-fs-xl:   24px;
+  --pn-fs-2xl:  32px;
+  --pn-fs-3xl:  44px;
+  --pn-fs-4xl:  56px;
+  --pn-fs-5xl:  72px;
+  --pn-fs-6xl:  96px;
+
+  --pn-lh-tight:   1.05;
+  --pn-lh-snug:    1.15;
+  --pn-lh-normal:  1.4;
+  --pn-lh-relaxed: 1.55;
+
+  --pn-ls-tightest: -0.02em;
+  --pn-ls-tight:    -0.01em;
+  --pn-ls-wider:     0.08em;
+  --pn-ls-widest:    0.15em;
+
+  /* ── Radius ────────────────────── */
+  --pn-r-sm:   6px;
+  --pn-r-md:   10px;
+  --pn-r-lg:   14px;
+  --pn-r-xl:   20px;
+  --pn-r-2xl:  28px;
+  --pn-r-pill: 999px;
+
+  /* ── Shadow ────────────────────── */
+  --pn-sh-sm:    0 1px 2px rgba(15, 24, 71, .06);
+  --pn-sh-md:    0 4px 12px rgba(15, 24, 71, .08);
+  --pn-sh-lg:    0 12px 32px rgba(15, 24, 71, .10);
+  --pn-sh-xl:    0 24px 56px rgba(15, 24, 71, .14);
+  --pn-sh-brand: 0 8px 32px rgba(112, 48, 224, .25);
+
+  /* ── Spacing ───────────────────── */
+  --pn-s-1:  4px;
+  --pn-s-2:  8px;
+  --pn-s-3:  12px;
+  --pn-s-4:  16px;
+  --pn-s-5:  20px;
+  --pn-s-6:  24px;
+  --pn-s-8:  32px;
+  --pn-s-10: 40px;
+  --pn-s-12: 48px;
+  --pn-s-16: 64px;
+  --pn-s-20: 80px;
+  --pn-s-24: 96px;
+
+  /* ── Motion ────────────────────── */
+  --pn-dur-fast:   160ms;
+  --pn-dur-base:   240ms;
+  --pn-dur-slow:   320ms;
+  --pn-ease-std:   cubic-bezier(.2, .8, .2, 1);
+  --pn-ease-out:   cubic-bezier(0, 0, .2, 1);
+  --pn-ease-inout: cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ── Base typography defaults ────── */
+html, body {
+  font-family: var(--pn-font-body);
+  font-size: var(--pn-fs-base);
+  line-height: var(--pn-lh-relaxed);
+  color: var(--pn-ink-1);
+  background: var(--pn-bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--pn-font-display);
+  font-weight: var(--pn-fw-extrabold);
+  letter-spacing: var(--pn-ls-tightest);
+  line-height: var(--pn-lh-tight);
+  color: var(--pn-ink-1);
+}
+
+code, kbd, pre, samp {
+  font-family: var(--pn-font-mono);
+  font-size: 0.92em;
+}
