@@ -1,0 +1,6 @@
+out/
+audio/lines/
+audio/narration.wav
+audio/music_bed.wav
+remotion/node_modules/
+remotion/.cache/
