@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ساعة الشاشة الزجاجية</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&display=swap">
+<style>
+/* Layout: one full-bleed SVG scene; glass clock sits between background ribbons and the foreground ribbon (depth effect). */
+:root{
+  --night:#081a4a; --indigo:#2b3aa0; --violet:#8a4fc0; --blush:#f39ab4;
+  --glass:#ffffff; --ink:#0c0f3d;
+  --font-clock:"Readex Pro","SF Pro Display",system-ui,sans-serif;
+  --font-ui:"Readex Pro","Noto Sans Arabic",Tahoma,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%;margin:0;background:var(--night);overflow:hidden}
+body{color:var(--glass);font-family:var(--font-ui)}
+body.idle{cursor:none}
+#stage{position:fixed;inset:0;width:100%;height:100%;display:block}
+.date{font-family:var(--font-ui);font-weight:400;fill:var(--glass);fill-opacity:.88}
+.clock{font-family:var(--font-clock);font-weight:600;letter-spacing:-.02em}
+#hint{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+  font:400 15px/1.4 var(--font-ui);color:var(--glass);background:rgba(12,15,61,.35);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.18);
+  padding:8px 18px;border-radius:999px;white-space:nowrap;transition:opacity 1.2s ease;max-width:calc(100% - 32px)}
+#hint.gone{opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+
+<svg id="stage" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-label="ساعة">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#081a4a"/>
+      <stop offset=".42" stop-color="#2b3aa0"/>
+      <stop offset=".72" stop-color="#8a4fc0"/>
+      <stop offset="1" stop-color="#f39ab4"/>
+    </linearGradient>
+    <radialGradient id="sun" cx=".72" cy=".42" r=".5">
+      <stop offset="0" stop-color="#ffd2b5" stop-opacity=".75"/>
+      <stop offset=".45" stop-color="#ff9fc0" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#ff9fc0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="g-far1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e59ad8"/><stop offset=".5" stop-color="#9a6be0"/><stop offset="1" stop-color="#4b46b8"/>
+    </linearGradient>
+    <linearGradient id="g-far2" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8f8cff"/><stop offset=".55" stop-color="#4c55d6"/><stop offset="1" stop-color="#262b8f"/>
+    </linearGradient>
+    <linearGradient id="g-front" x1="0" y1="0" x2=".3" y2="1">
+      <stop offset="0" stop-color="#4f6cff"/><stop offset=".35" stop-color="#2430a8"/><stop offset="1" stop-color="#0c0f3d"/>
+    </linearGradient>
+    <linearGradient id="g-near" x1="0" y1="0" x2="1" y2=".6">
+      <stop offset="0" stop-color="#ff9cbc"/><stop offset=".5" stop-color="#c0449f"/><stop offset="1" stop-color="#4a1670"/>
+    </linearGradient>
+    <linearGradient id="glassTint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".22"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".10"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".04"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2=".25" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".95"/>
+      <stop offset=".45" stop-color="#fff" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".55"/>
+    </linearGradient>
+    <filter id="frost" filterUnits="userSpaceOnUse" x="-100" y="-100" width="4000" height="4000" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".006" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feGaussianBlur in="d" stdDeviation="16" result="b"/>
+      <feColorMatrix in="b" type="saturate" values="1.7" result="s"/>
+      <feComponentTransfer in="s"><feFuncR type="linear" slope="1.12" intercept=".03"/><feFuncG type="linear" slope="1.12" intercept=".03"/><feFuncB type="linear" slope="1.1" intercept=".05"/></feComponentTransfer>
+    </filter>
+    <filter id="ring" x="-5%" y="-5%" width="110%" height="110%">
+      <feMorphology in="SourceAlpha" operator="erode" radius="2.5" result="e"/>
+      <feComposite in="SourceGraphic" in2="e" operator="out"/>
+    </filter>
+    <filter id="innerGlow" x="-5%" y="-5%" width="110%" height="110%">
+      <feMorphology in="SourceAlpha" operator="erode" radius="9" result="e"/>
+      <feGaussianBlur in="e" stdDeviation="7" result="eb"/>
+      <feComposite in="SourceGraphic" in2="eb" operator="out"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="18"/></filter>
+    <filter id="edgeGlow" x="-5%" y="-50%" width="110%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+    <clipPath id="clockClip"><text id="t-clip" class="clock" text-anchor="middle"></text></clipPath>
+  </defs>
+
+  <!-- background scene (also sampled by the glass) -->
+  <g id="scene">
+    <rect id="skyRect" x="0" y="0" fill="url(#sky)"/>
+    <rect id="sunRect" x="0" y="0" fill="url(#sun)"/>
+    <path id="far1" fill="url(#g-far1)" opacity=".92"/>
+    <path id="far2" fill="url(#g-far2)"/>
+  </g>
+
+  <text id="date" class="date" text-anchor="middle"></text>
+
+  <!-- glass clock -->
+  <text id="t-shadow" class="clock" text-anchor="middle" fill="#0c0f3d" fill-opacity=".28" filter="url(#soft)"></text>
+  <g clip-path="url(#clockClip)">
+    <use href="#scene" filter="url(#frost)"/>
+    <rect id="tintRect" x="0" y="0" fill="url(#glassTint)"/>
+    <text id="t-inner" class="clock" text-anchor="middle" fill="#fff" fill-opacity=".38" filter="url(#innerGlow)"></text>
+  </g>
+  <text id="t-rim" class="clock" text-anchor="middle" fill="url(#rim)" filter="url(#ring)"></text>
+
+  <!-- foreground ribbons: drawn after the clock so they hide its lower part -->
+  <path id="front" fill="url(#g-front)"/>
+  <path id="frontEdge" fill="none" stroke="#ffd6ec" stroke-opacity=".8" stroke-width="4" filter="url(#edgeGlow)"/>
+  <path id="frontEdgeSharp" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="1.5"/>
+  <path id="near" fill="url(#g-near)"/>
+  <path id="nearEdge" fill="none" stroke="#ffe3f0" stroke-opacity=".6" stroke-width="2"/>
+</svg>
+
+<div id="hint">اضغط OK أو انقر لملء الشاشة</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const svg = $('stage');
+  const NS = 'http://www.w3.org/2000/svg';
+  const clockIds = ['t-clip','t-shadow','t-inner','t-rim'];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Options from the link: #24h, #arabic, #arabic-24h
+  const hash = (location.hash || '').slice(1);
+  const opt = { h24: hash.includes('24h'), arabicDigits: hash.includes('arabic') };
+
+  let W = 1920, H = 1080, portrait = false, L = {};
+
+  // ribbon definitions: base is set by layout; waves = [amp (×H), wavelength (×W), speed rad/s, phase]
+  const ribbons = {
+    far1:  { waves: [[.05, 1.3, .035, 0.4], [.02, .5, -.06, 2.1]] },
+    far2:  { waves: [[.04, 1.0, -.04, 1.7], [.018, .42, .07, .2]] },
+    front: { waves: [[.04, 1.15, .045, 0], [.018, .48, -.075, 1.3]] },
+    near:  { waves: [[.05, .9, -.05, 2.6], [.015, .37, .09, .7]] }
+  };
+
+  function curve(r, t){
+    const pts = [], step = W / 96;
+    for (let x = -40; x <= W + 40; x += step){
+      let y = r.base;
+      for (const [a, l, s, p] of r.waves) y += a * H * Math.sin(2 * Math.PI * x / (l * W) + p + s * t);
+      pts.push([x, y]);
+    }
+    return pts;
+  }
+  const line = pts => 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L');
+  const area = pts => line(pts) + `L${W + 40} ${H + 40}L-40 ${H + 40}Z`;
+
+  function drawRibbons(t){
+    for (const k of ['far1','far2','front','near']){
+      const pts = curve(ribbons[k], t);
+      $(k).setAttribute('d', area(pts));
+      if (k === 'front'){ const d = line(pts); $('frontEdge').setAttribute('d', d); $('frontEdgeSharp').setAttribute('d', d); }
+      if (k === 'near') $('nearEdge').setAttribute('d', line(pts));
+    }
+  }
+
+  function layout(){
+    const vw = innerWidth, vh = innerHeight;
+    portrait = vh > vw * 1.05;
+    if (portrait){ W = 1080; H = Math.round(1080 * vh / vw); } else { W = 1920; H = Math.round(1920 * vh / vw); }
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    for (const id of ['skyRect','sunRect','tintRect']){ $(id).setAttribute('width', W); $(id).setAttribute('height', H); }
+
+    const cap = .72; // cap height ratio of the clock face
+    if (!portrait){
+      const fs = Math.min(H * .5, W * .34);
+      const top = H * .19;
+      L = { fs, lines: [top + fs * cap], dateY: top - fs * .1, dateSize: Math.max(30, fs * .1) };
+    } else {
+      const fs = W * .5;
+      const top = H * .13;
+      const y1 = top + fs * cap, y2 = y1 + fs * .86;
+      L = { fs, lines: [y1, y2], dateY: top - fs * .1, dateSize: Math.max(34, fs * .085) };
+    }
+    const last = L.lines[L.lines.length - 1];
+    const capH = L.fs * cap;
+    // foreground crest covers roughly the bottom third of the digits
+    ribbons.front.base = last - capH * .32;
+    ribbons.near.base  = ribbons.front.base + H * (portrait ? .2 : .3);
+    ribbons.far2.base  = last - capH * .78;
+    ribbons.far1.base  = last - capH * 1.15;
+
+    for (const id of clockIds){ const el = $(id); el.setAttribute('font-size', L.fs.toFixed(1)); }
+    const d = $('date');
+    d.setAttribute('x', W / 2); d.setAttribute('y', L.dateY.toFixed(1)); d.setAttribute('font-size', L.dateSize.toFixed(1));
+    renderTime(true);
+    drawRibbons(t0());
+  }
+
+  const start = performance.now();
+  const t0 = () => (performance.now() - start) / 1000;
+
+  const digitFmt = new Intl.NumberFormat(opt.arabicDigits ? 'ar-SA' : 'en-US', { useGrouping:false });
+  const pad2 = n => (n < 10 ? digitFmt.format(0) : '') + digitFmt.format(n);
+  const greg = new Intl.DateTimeFormat('ar-SA-u-ca-gregory-nu-' + (opt.arabicDigits ? 'arab' : 'latn'), { weekday:'long', day:'numeric', month:'long' });
+  const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-' + (opt.arabicDigits ? 'arab' : 'latn'), { day:'numeric', month:'long' });
+
+  let lastKey = '';
+  function renderTime(force){
+    const now = new Date();
+    let h = now.getHours();
+    if (!opt.h24){ h = h % 12 || 12; }
+    const hh = opt.h24 ? pad2(h) : digitFmt.format(h);
+    const mm = pad2(now.getMinutes());
+    const key = hh + ':' + mm + now.getDate();
+    if (!force && key === lastKey) return;
+    lastKey = key;
+    const parts = portrait ? [hh, mm] : [hh + ':' + mm];
+    for (const id of clockIds){
+      const el = $(id);
+      el.textContent = '';
+      parts.forEach((p, i) => {
+        const ts = document.createElementNS(NS, 'tspan');
+        ts.setAttribute('x', W / 2); ts.setAttribute('y', L.lines[i].toFixed(1));
+        ts.setAttribute('direction', 'ltr');
+        ts.textContent = p;
+        el.appendChild(ts);
+      });
+    }
+    $('date').textContent = greg.format(now) + '  ·  ' + hijri.format(now).replace(/\s*هـ$/, '') + ' هـ';
+  }
+
+  // animation loop, capped at ~24 fps to stay light on TV hardware
+  let lastFrame = 0;
+  function loop(ts){
+    if (ts - lastFrame > 42){ lastFrame = ts; drawRibbons(t0()); }
+    requestAnimationFrame(loop);
+  }
+
+  setInterval(() => renderTime(false), 1000);
+  addEventListener('resize', layout);
+  layout();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => renderTime(true));
+  if (!reduce) requestAnimationFrame(loop);
+
+  // fullscreen on click / remote OK, keep the screen awake, hide the cursor when idle
+  const hint = $('hint');
+  setTimeout(() => hint.classList.add('gone'), 7000);
+  function goFull(){
+    const el = document.documentElement;
+    const fn = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (fn && !document.fullscreenElement) { try { const p = fn.call(el); if (p && p.catch) p.catch(() => {}); } catch(e){} }
+    hint.classList.add('gone');
+  }
+  addEventListener('click', goFull);
+  addEventListener('keydown', e => { if (e.key === 'Enter' || e.keyCode === 13) goFull(); });
+
+  let lock = null;
+  async function wake(){ try { if ('wakeLock' in navigator) lock = await navigator.wakeLock.request('screen'); } catch(e){} }
+  wake();
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') wake(); });
+
+  let idleT;
+  function poke(){ document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add('idle'), 3000); }
+  addEventListener('mousemove', poke); poke();
+})();
+</script>
+</body>
+</html>
